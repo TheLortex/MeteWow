@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Un titre</title>
+        
+        <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.0.0/css/bootstrap.min.css" />
+        <style type="text/css">
+            body {
+                background-color: #325682;
+                color:white;
+               
+               cursor:default;
+            }
+        
+            #cheval {
+                margin-top: 10%;
+                background-color: #305080;
+            }
+        
+            #locker {
+                position: absolute;
+                top:0;
+                left:0;
+                width:100%;
+                height:100%;
+                
+                background-color: #4296B2;
+                
+                -webkit-box-shadow:  0px -2px 50px 0px #000;
+                box-shadow:  0px -2px 50px 0px #000;
+            }
+            
+            .cLock {
+               display: table;
+               width: 100%;
+               height: 100%;
+            }
+            
+            .cLock_2 {
+               display: table-cell;
+               text-align: center;
+               vertical-align: middle;
+            }
+            
+            h1 {
+                font-size: 60px;
+                line-height: 1;
+            }
+            
+            #databar {
+                height: 50px;
+                width: 100%;
+                text-align: center;
+                position: absolute;
+                bottom: 0;
+                padding: 15px;
+                
+            
+                background-color: #3A85A8;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="jumbotron" id="cheval">
+          <div class="container">
+            <h1>Hohoho.</h1>
+            <p>Donnez moulte avoine à mon cheval.</p>
+          </div>
+        </div>
+        
+        <div id="locker">
+            <div class="cLock draggable">
+               <div class="cLock_2 draggable">
+                  <h1 class="draggable">Il fait beau.</h1>
+               </div>
+            </div>
+            <div id="databar"> 
+                <div class="row">
+                    <span class="col-lg-4 draggable"><strong>42</strong> serveurs MétéWow connectés.</span>
+                    <span class="col-lg-4 draggable">Dernière mise à jour il y a <strong>42 secondes</strong>.</span>
+                    <span class="col-lg-4 draggable"><strong>Aucune</strong> alerte.</span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+    
+        if  (document.getElementById){
+        (function(){
+        
+            //Stop Opera selecting anything whilst dragging.
+            if (window.opera){
+                document.write("<input type='hidden' id='Q' value=' '>");
+            }
+            
+            var n = 500;
+            var dragok = false;
+            var y,x,d,dy,dx;
+            
+            var lastTop=0;
+            var goingUp=true;
+            function move(e){
+                if (!e) e = window.event;
+                if (dragok){
+                  var top = dy + e.clientY - y;
+                  if(top < lastTop) {
+                      goingUp=true;
+                  } else {
+                      goingUp=false;
+                  }
+                  lastTop=top;
+                  
+                  if(top <= 0) {
+                    $("#locker").css("top",top);
+                  }
+                  else {
+                    $("#locker").css("top",0);
+                  }
+                  
+                  return false;
+                }
+            }
+            
+            function down(e){
+                if (!e) e = window.event;
+                
+                var temp = (typeof e.target != "undefined")?e.target:e.srcElement;
+                
+                if (temp.tagName != "HTML"|"BODY" && (temp.className.indexOf("draggable") == -1)){
+                    temp = (typeof temp.parentNode != "undefined")?temp.parentNode:temp.parentElement;
+                }
+                
+                if (temp.className.indexOf("draggable") != -1){
+            
+                 if (window.opera){
+                    document.getElementById("Q").focus();
+                 }
+                 dragok = true;
+                 temp.style.zIndex = n++;
+                 d = temp;
+                 dx = parseInt(document.getElementById("locker").style.left+0);
+                 dy = parseInt(document.getElementById("locker").style.top+0);
+                 x = e.clientX;
+                 y = e.clientY;
+                 document.onmousemove = move;
+                 return false;
+                }
+            }
+            
+            function up(){
+                if(dragok) {
+                    if(goingUp) {
+                        $("#locker").animate({top: 50-($("#locker").height())}, 400);
+                        goingUp=false;
+                    } else {
+                        $("#locker").animate({top: 0}, 400);
+                        goingUp=true;
+                    }
+                }
+                lastTop=0;
+                dragok = false;
+                document.onmousemove = null;
+                
+                    
+            }
+            
+            document.onmousedown = down;
+            document.onmouseup = up;
+            
+            })();
+        }//End.
+        
+        (function ($) {
+        $.fn.disableSelection = function () {
+            return this.each(function () {
+                if (typeof this.onselectstart != 'undefined') {
+                    this.onselectstart = function() { return false; };
+                } else if (typeof this.style.MozUserSelect != 'undefined') {
+                    this.style.MozUserSelect = 'none';
+                } else {
+                    this.onmousedown = function() { return false; };
+                }
+            });
+        };
+        })(jQuery);
+        
+        $(document).ready(function() {
+            $('*').disableSelection();
+        });
+        </script>
+    </body>
+</html>
