@@ -7,11 +7,17 @@
         
         <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.0.0/css/bootstrap.min.css" />
         <style type="text/css">
+            html {
+                height: 100%;
+            }
+        
             body {
                 background-color: #325682;
                 color:white;
                
                cursor:default;
+                width: 100%;
+                height: 100%;
             }
         
             #cheval {
@@ -60,14 +66,113 @@
             
                 background-color: #3A85A8;
             }
+            
+            #content {
+                width: 100%;
+                height: 100%;
+            }
+            
+            
+            
+            @media screen and (max-width: 768px) {
+                 #sidebar {
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgb(44, 119, 75);
+                    
+                    border-right: rgb(10, 80, 45) solid 1px;
+                    height: 320px;
+                }  
+                
+                #sidebar h3 {
+                    text-align: center;
+                    margin-bottom: 50px;
+                    padding-top:50px;
+                    background-color: rgba(0, 0, 0,0.42);
+                    padding-bottom:10px;
+                }
+                
+                #sidebar li {
+                    display: block;
+                    width: 100%;
+                    height: 40px;
+                    margin-bottom: 6px;
+                    font-size: 1.2em;
+                    list-style: none;
+                    background-color: rgba(0,0,0,0.1);
+                    text-align: center;
+                    padding-top: 12px;
+                }
+            }
+            
+            @media screen and (min-width: 768px) {
+                #sidebar {
+                    width: 15%;
+                    height: 100%;
+                    background-color: rgb(44, 119, 75);
+                    float: left;
+                    
+                    border-right: rgb(10, 80, 45) solid 1px;
+                } 
+                
+                #main {
+                    width: 85%;
+                    float: right;
+                }
+                
+                #sidebar h3 {
+                    text-align: center;
+                    margin-bottom: 75px;
+                    padding-top:100px;
+                    background-color: rgba(0, 0, 0,0.42);
+                    padding-bottom:30px;
+                }
+                
+                
+                #sidebar li {
+                    display: block;
+                    width: 100%;
+                    height: 50px;
+                    margin-bottom: 15px;
+                    font-size: 1.2em;
+                    list-style: none;
+                    background-color: rgba(0,0,0,0.1);
+                    text-align: center;
+                    padding-top: 12px;
+                }
+                
+            }
+            
+            #sidebar ul {
+                width: 100%;
+                padding:0;
+            }
+                
+            #sidebar li:hover {
+                background-color: rgba(0,0,0,0.3);
+                cursor: pointer;
+            }
+
         </style>
     </head>
     <body>
-        <div class="jumbotron" id="cheval">
-          <div class="container">
-            <h1>Hohoho.</h1>
-            <p>Donnez moulte avoine à mon cheval.</p>
-          </div>
+        <div id="content">
+            <nav id="sidebar">
+                <h3>MENU</h3>
+                <ul>
+                    <li>Dashboard</li>
+                    <li>Graphiques</li>
+                    <li>Paramètres</li>
+                </ul>
+            </nav>
+            <div id="main">
+                <div class="jumbotron" id="cheval">
+                  <div class="container">
+                    <h1>Lorem Ipsum.</h1>
+                    <p>Dolor sit amet.</p>
+                  </div>
+                </div>
+            </div>
         </div>
         
         <div id="locker">
@@ -99,6 +204,8 @@
         </div>
         <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.0.3/jquery-2.0.3.min.js"></script>
         <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
         <script type="text/javascript">
         $(window).resize(function() {
             if($("#locker").css("top") != "0px") {
