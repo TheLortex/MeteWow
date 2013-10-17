@@ -76,17 +76,36 @@
                   <h1 class="draggable">Il fait beau.</h1>
                </div>
             </div>
-            <div id="databar"> 
-                <div class="row">
+            <div id="databar" class="draggable"> 
+                <div class="row hidden-xs" >
                     <span class="col-lg-4 draggable"><strong>42</strong> serveurs MétéWow connectés.</span>
                     <span class="col-lg-4 draggable">Dernière mise à jour il y a <strong>42 secondes</strong>.</span>
                     <span class="col-lg-4 draggable"><strong>Aucune</strong> alerte.</span>
+                </div>
+                <div class="carousel slide visible-xs">
+                      <div class="carousel-inner">
+                        <div class="item active draggable">
+                            <p><strong>42</strong> serveurs MétéWow connectés.</p>
+                        </div>
+                        <div class="item draggable">
+                            <p>Dernière mise à jour il y a <strong>42 secondes</strong>.</p>
+                        </div>
+                        <div class="item draggable">
+                            <p><strong>Aucune</strong> alerte.</p>
+                        </div>
+                      </div>
                 </div>
             </div>
         </div>
         <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.0.3/jquery-2.0.3.min.js"></script>
         <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
         <script type="text/javascript">
+        $(window).resize(function() {
+            if($("#locker").css("top") != "0px") {
+                $("#locker").css("top",50-($("#locker").height()));
+            }
+        });
+    
     
         if  (document.getElementById){
         (function(){
@@ -189,6 +208,10 @@
         
         $(document).ready(function() {
             $('*').disableSelection();
+            $('.carousel').carousel({
+              interval: 4200,
+              pause: "none"
+            })
         });
         </script>
     </body>
