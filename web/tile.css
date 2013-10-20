@@ -1,0 +1,15 @@
+article {
+    display: inline-block;
+    width: 200px;
+    height: 200px;
+    
+    background-color: rgba(0,0,0,0.1);
+    margin: 10px;
+    padding: 10px;
+    
+    vertical-align: middle;
+}
+
+#tileset {
+    text-align: center;
+}

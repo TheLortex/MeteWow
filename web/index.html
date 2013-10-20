@@ -13,9 +13,12 @@
         </style>
     </head>
     <body>
+    
+        <!--  L'UI. -->
+        
         <div id="content">
             <nav id="sidebar">
-                <h3 onclick="toggleShowMenu();">MENU</h3>
+                <h2 onclick="toggleShowMenu();">MENU</h2>
                 <ul id="list_nav">
                     <li>Dashboard</li>
                     <li>Graphiques</li>
@@ -23,21 +26,72 @@
                 </ul>
             </nav>
             <div id="main">
-                <div class="jumbotron" id="cheval">
-                  <div class="container">
-                    <h1>Lorem Ipsum.</h1>
-                    <p>Dolor sit amet.</p>
-                  </div>
+                <div id="cheval">
+                    <h2>Phrase récapitulative.</h2>
+                    <nav>
+                        <select id="metewow_server" name="metewow_server">
+                            <option value="id_1">MTW_00456 (Eaubonne)</option>
+                            <option value="id_2">MTW_01248 (Mont Saint-Michel)</option>
+                            <option value="id_3">MTW_01337 (Océan Atlantique)</option>
+                            <option value="id_4">MTW_02242 (Position indéterminée)</option>
+                        </select>
+                    </nav>
+                    <div style="clear:both;"></div>
+                </div>
+                <div id="tileset">
+                    <article>
+                        <h3>Une donnée.</h3>
+                        <p>Lorem ipsum</p>
+                    </article>
+                    <article>
+                        <h3>Une autre donnée.</h3>
+                        <p>Dolor sit amet.</p>
+                    </article>
+                    <article>
+                        <h3>Température</h3>
+                        <p> 42°F</p>
+                    </article>
+                    <article>
+                        <h3>Humidité</h3>
+                        <p> 103%</p>
+                    </article>
+                    <article>
+                        <h3>Pression</h3>
+                        <p> Un bon bar et deux saumons.</p>
+                    </article>
+                    <article>
+                        <h3>Vent</h3>
+                        <p> Tornade en cours.</p>
+                    </article>
+                    <article>
+                        <h3>Caméra</h3>
+                        <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/---------\&nbsp;____<br />
+                        |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;___|/&nbsp;&nbsp; <br />
+                        |__/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+                        __/   (un chalet en Normandie)       
+                        </p>
+                    </article>
+                    <article>
+                        <h3>Alertes</h3>
+                        <p> Une baleine s'est échouée.</p>
+                    </article>
                 </div>
             </div>
+            <div style="clear:both;"></div>
         </div>
         
-        <div id="locker">
+        
+        <!--  Le lock screen. -->
+        
+        <div id="locker" style="display:block">
             <div class="cLock draggable">
                <div class="cLock_2 draggable">
-                  <h1 class="draggable">Il fait beau.</h1>
+                  <h1 class="draggable">Il fait beau.<sub style="font-size:0.2em">(1)</sub></h1>
                </div>
             </div>
+            <p style="position: absolute; bottom: 50px; margin-left: 10px;">(1) Cette vérité générale est générale. <sub style="font-size:0.6em">(2)</sub><br />
+                (2) Sauf en cas de chutes d'eau, telle que la pluie.
+            </p>
             <div id="databar" class="draggable"> 
                 <div class="row hidden-xs" >
                     <span class="col-lg-4 draggable"><strong>42</strong> serveurs MétéWow connectés.</span>
