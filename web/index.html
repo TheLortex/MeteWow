@@ -4,18 +4,45 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Un titre</title>
-        
+
         <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.0.0/css/bootstrap.min.css" />
         <link type="text/css" rel="stylesheet" href="main.css" />
         <link type="text/css" rel="stylesheet" href="tile.css" />
+        
+            <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.js"></script>
+            <script type="text/javascript" src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+            <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+            <script type="text/javascript" src="jquery.shapeshift.min.js"></script>
+            <style type="text/css">
+            .container {
+                position: relative;
+                width: 95%;
+                padding-top: 10px;
+            }
             
-
-        </style>
+            .container > article {
+                position: absolute;
+            }
+            
+            .container .ss-placeholder-child {
+                background: rgba(0,0,0,0.03);
+                border: 1px dashed rgba(0,0,0,0.15);
+            }
+              </style>
+              <script type="text/javascript">//<![CDATA[ 
+                $(window).load(function(){
+                $(".container").shapeshift({
+                    gutterX: -1, // Compensate for div border
+                    gutterY: -1, // Compensate for div border
+                    paddingX: 0,
+                    paddingY: 0
+                });
+                });//]]> </script>
     </head>
     <body>
-    
+
         <!--  L'UI. -->
-        
+
         <div id="content">
             <nav id="sidebar">
                 <h2 onclick="toggleShowMenu();">MENU</h2>
@@ -38,51 +65,67 @@
                     </nav>
                     <div style="clear:both;"></div>
                 </div>
-                <div id="tileset">
+                <div id="tileset" class="container">
                     <article>
-                        <h3>Une donnée.</h3>
-                        <p>Lorem ipsum</p>
+                        <div>
+                            <h3>Une donnée.</h3>
+                            <p>Lorem ipsum</p>
+                        </div>
                     </article>
                     <article>
+                        <div>
                         <h3>Une autre donnée.</h3>
                         <p>Dolor sit amet.</p>
+                        </div>
                     </article>
                     <article>
+                        <div>
                         <h3>Température</h3>
                         <p> 42°F</p>
+                        </div>
                     </article>
                     <article>
+                        <div>
                         <h3>Humidité</h3>
                         <p> 103%</p>
+                        </div>
                     </article>
-                    <article>
+                    <article data-ss-colspan="2">
+                        <div>
                         <h3>Pression</h3>
                         <p> Un bon bar et deux saumons.</p>
+                        </div>
                     </article>
                     <article>
+                        <div>
                         <h3>Vent</h3>
                         <p> Tornade en cours.</p>
+                        </div>
                     </article>
-                    <article>
+                    <article data-ss-colspan="3">
+                        <div>
                         <h3>Caméra</h3>
                         <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/---------\&nbsp;____<br />
                         |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;___|/&nbsp;&nbsp; <br />
                         |__/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
-                        __/   (un chalet en Normandie)       
+                        __/   (un chalet en Normandie)
                         </p>
+                        </div>
                     </article>
                     <article>
+                        <div>
                         <h3>Alertes</h3>
                         <p> Une baleine s'est échouée.</p>
+                        </div>
                     </article>
                 </div>
             </div>
             <div style="clear:both;"></div>
         </div>
-        
-        
+
+
         <!--  Le lock screen. -->
-        
+
         <div id="locker" style="display:block">
             <div class="cLock draggable">
                <div class="cLock_2 draggable">
@@ -92,7 +135,7 @@
             <p style="position: absolute; bottom: 50px; margin-left: 10px;">(1) Cette vérité générale est générale. <sub style="font-size:0.6em">(2)</sub><br />
                 (2) Sauf en cas de chutes d'eau, telle que la pluie.
             </p>
-            <div id="databar" class="draggable"> 
+            <div id="databar" class="draggable">
                 <div class="row hidden-xs" >
                     <span class="col-lg-4 draggable"><strong>42</strong> serveurs MétéWow connectés.</span>
                     <span class="col-lg-4 draggable">Dernière mise à jour il y a <strong>42 secondes</strong>.</span>
@@ -113,10 +156,12 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.0.3/jquery-2.0.3.min.js"></script>
-        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
+  
+        <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        
+        <script type="text/javascript">
+        </script>
         <script type="text/javascript" src="main.js"> </script>
     </body>
 </html>

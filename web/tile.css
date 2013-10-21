@@ -1,15 +1,28 @@
-article {
-    display: inline-block;
-    width: 200px;
-    height: 200px;
+
+#tileset article {
+    padding: 5px;
+    text-align: center;
+    height: 210px;
+    width: 210px;
     
+    position: absolute;
+}
+
+#tileset article div {
     background-color: rgba(0,0,0,0.1);
-    margin: 10px;
+    width: 100%;
+    height: 100%;
     padding: 10px;
-    
-    vertical-align: middle;
+}
+
+#tileset > article[data-ss-colspan='2'] {
+    width: 420px;
+}
+
+#tileset > article[data-ss-colspan='3'] {
+    width: 630px;
 }
 
 #tileset {
-    text-align: center;
+    position: relative;
 }
