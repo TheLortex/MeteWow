@@ -9,10 +9,13 @@
         <link type="text/css" rel="stylesheet" href="main.css" />
         <link type="text/css" rel="stylesheet" href="tile.css" />
         
-            <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.js"></script>
+            <script type="text/javascript" src="//code.jquery.com/jquery-2.0.3.js"></script>
             <script type="text/javascript" src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
             <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
             <script type="text/javascript" src="jquery.shapeshift.min.js"></script>
+            <script type="text/javascript">
+
+            </script>
             <style type="text/css">
             .container {
                 position: relative;
@@ -27,17 +30,7 @@
             .container .ss-placeholder-child {
                 background: rgba(0,0,0,0.03);
                 border: 1px dashed rgba(0,0,0,0.15);
-            }
-              </style>
-              <script type="text/javascript">//<![CDATA[ 
-                $(window).load(function(){
-                $(".container").shapeshift({
-                    gutterX: -1, // Compensate for div border
-                    gutterY: -1, // Compensate for div border
-                    paddingX: 0,
-                    paddingY: 0
-                });
-                });//]]> </script>
+            }</style>
     </head>
     <body>
 
@@ -66,43 +59,43 @@
                     <div style="clear:both;"></div>
                 </div>
                 <div id="tileset" class="container">
-                    <article>
+                    <article data-id=0>
                         <div>
                             <h3>Une donnée.</h3>
                             <p>Lorem ipsum</p>
                         </div>
                     </article>
-                    <article>
+                    <article data-id=1>
                         <div>
                         <h3>Une autre donnée.</h3>
                         <p>Dolor sit amet.</p>
                         </div>
                     </article>
-                    <article>
+                    <article data-id=2>
                         <div>
                         <h3>Température</h3>
                         <p> 42°F</p>
                         </div>
                     </article>
-                    <article>
+                    <article data-id=3>
                         <div>
                         <h3>Humidité</h3>
                         <p> 103%</p>
                         </div>
                     </article>
-                    <article data-ss-colspan="2">
+                    <article data-ss-colspan="2" data-id=4>
                         <div>
                         <h3>Pression</h3>
                         <p> Un bon bar et deux saumons.</p>
                         </div>
                     </article>
-                    <article>
+                    <article id="test" data-id=5>
                         <div>
                         <h3>Vent</h3>
                         <p> Tornade en cours.</p>
                         </div>
                     </article>
-                    <article data-ss-colspan="3">
+                    <article data-ss-colspan="3" data-id=6>
                         <div>
                         <h3>Caméra</h3>
                         <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/---------\&nbsp;____<br />
@@ -112,7 +105,7 @@
                         </p>
                         </div>
                     </article>
-                    <article>
+                    <article data-id=7>
                         <div>
                         <h3>Alertes</h3>
                         <p> Une baleine s'est échouée.</p>
@@ -161,6 +154,39 @@
         <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
         
         <script type="text/javascript">
+        
+         $(window).load(function(){
+            var container = document.getElementById("tileset");
+            var nodes = container.getElementsByTagName('article');
+            var sortList = [];
+            var l = nodes.length;
+            for(var i=0;i<l;i++) {
+                sortList.push(nodes[0]); 
+                container.removeChild(nodes[0]);
+            }
+            
+            for(var i=0;i<l;i++) {
+                var itemAtIndex = parseInt(localStorage.getItem(i),10);
+                container.appendChild(sortList[itemAtIndex]); 
+            }
+            
+             
+             
+             
+            $(".container").shapeshift({
+                gutterX: -1, // Compensate for div border
+                gutterY: -1, // Compensate for div border
+                paddingX: 0,
+                paddingY: 0,
+                minColumns: 3
+            });
+        });
+        
+        $(".container").on("ss-rearranged", function(e, selected) {
+           $('.container').children().each(function() {
+              localStorage.setItem($(this).index(), $(this).data("id"));
+            });
+        });
         </script>
         <script type="text/javascript" src="main.js"> </script>
     </body>
