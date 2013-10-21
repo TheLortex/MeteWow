@@ -25,4 +25,5 @@
 
 #tileset {
     position: relative;
+    overflow: auto;
 }
