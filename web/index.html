@@ -172,6 +172,9 @@
             var sortList = [];
             var l = nodes.length;
             for(var i=0;i<l;i++) {
+                $(nodes[0]).attr("data-ss-colspan",parseInt(localStorage.getItem("col-"+i),10));
+                $(nodes[0]).attr("data-ss-rowspan",parseInt(localStorage.getItem("row-"+i),10));
+                
                 sortList.push(nodes[0]); 
                 container.removeChild(nodes[0]);
             }
