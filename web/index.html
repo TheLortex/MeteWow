@@ -95,7 +95,7 @@
                         <p> Tornade en cours.</p>
                         </div>
                     </article>
-                    <article data-ss-colspan="3" data-id=6>
+                    <article data-ss-colspan="2" data-ss-rowspan="2" data-id=6>
                         <div>
                         <h3>Caméra</h3>
                         <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/---------\&nbsp;____<br />
@@ -114,6 +114,17 @@
                 </div>
             </div>
             <div style="clear:both;"></div>
+        </div>
+        
+        <!-- Menu contextuel pour les tiles -->
+        
+        <div class="hide" id="rmenu">
+            <ul>
+                <li onclick="setDimensions(1,1); return false;">1x1</li>
+                <li onclick="setDimensions(2,1); return false;">2x1</li>
+                <li onclick="setDimensions(1,2); return false;">1x2</li>
+                <li onclick="setDimensions(2,2); return false;">2x2</li>
+            </ul>
         </div>
 
 
@@ -186,5 +197,6 @@
         });
         </script>
         <script type="text/javascript" src="main.js"> </script>
+        <script type="text/javascript" src="rmenu.js"> </script>
     </body>
 </html>
