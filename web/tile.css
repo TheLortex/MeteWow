@@ -29,7 +29,7 @@
 
 #tileset {
     position: relative;
-    overflow: auto;
+    overflow: hidden;
 }
 
 #rmenu.show {
