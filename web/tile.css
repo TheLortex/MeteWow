@@ -46,6 +46,10 @@
     border:none;
 }
 
+#tileset article div button:focus {
+    outline: none;
+}
+
 #rmenu.show {
     z-index:1000;
     position: absolute;
