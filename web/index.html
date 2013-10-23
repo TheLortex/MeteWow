@@ -63,36 +63,43 @@
                         <div>
                             <h3>Une donnée.</h3>
                             <p>Lorem ipsum</p>
+                            
+                            <button class="glyphicon glyphicon-signal btn-lg"></button>
                         </div>
                     </article>
                     <article data-id=1>
                         <div>
                         <h3>Une autre donnée.</h3>
                         <p>Dolor sit amet.</p>
+                            <button class="glyphicon glyphicon-signal btn-lg"></button>
                         </div>
                     </article>
                     <article data-id=2>
                         <div>
                         <h3>Température</h3>
                         <p> 42°F</p>
+                            <button class="glyphicon glyphicon-signal btn-lg"></button>
                         </div>
                     </article>
                     <article data-id=3>
                         <div>
                         <h3>Humidité</h3>
                         <p> 103%</p>
+                            <button class="glyphicon glyphicon-signal btn-lg"></button>
                         </div>
                     </article>
                     <article data-ss-colspan="2" data-id=4>
                         <div>
                         <h3>Pression</h3>
                         <p> Un bon bar et deux saumons.</p>
+                            <button class="glyphicon glyphicon-signal btn-lg"></button>
                         </div>
                     </article>
                     <article id="test" data-id=5>
                         <div>
                         <h3>Vent</h3>
                         <p> Tornade en cours.</p>
+                            <button class="glyphicon glyphicon-signal btn-lg"></button>
                         </div>
                     </article>
                     <article data-ss-colspan="2" data-ss-rowspan="2" data-id=6>
@@ -103,12 +110,14 @@
                         |__/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
                         __/   (un chalet en Normandie)
                         </p>
+                            <button class="glyphicon glyphicon-signal btn-lg"></button>
                         </div>
                     </article>
                     <article data-id=7>
                         <div>
                         <h3>Alertes</h3>
                         <p> Une baleine s'est échouée.</p>
+                            <button class="glyphicon glyphicon-signal btn-lg"></button>
                         </div>
                     </article>
                 </div>
@@ -185,11 +194,10 @@
             }
              
             $(".container").shapeshift({
-                gutterX: -1, // Compensate for div border
-                gutterY: -1, // Compensate for div border
-                paddingX: 0,
-                paddingY: 0,
-                minColumns: 3
+                gutterX: 0, // Compensate for div border
+                gutterY: 0, // Compensate for div border
+                paddingX: 10,
+                paddingY: 10
             });
         });
         
