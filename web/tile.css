@@ -8,7 +8,7 @@
     position: absolute;
 }
 
-#tileset article div {
+#tileset article > div {
     background-color: rgba(0,0,0,0.1);
     width: 100%;
     height: 100%;
@@ -53,6 +53,11 @@
 
 #tileset article div button:focus {
     outline: none;
+}
+
+.quickgraph {
+    width: 100%;
+    height: 100%;
 }
 
 #rmenu.show {
