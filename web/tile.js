@@ -96,7 +96,8 @@ $(document).ready(function() {
                 						series.xAxis.setExtremes(x-60*1000,x);
                 					}, 1000);
                 				}
-                			}
+                			},
+                			backgroundColor: "rgba(0,0,0,0.1)"
                 		},
                 		
                 		rangeSelector: {
@@ -111,17 +112,40 @@ $(document).ready(function() {
                 		    enabled: false
                 		},
                 		
+                		xAxis: {
+                		    labels: {
+                                style: {
+                                    color: "white"
+                                }
+                            }
+                		},
+                		
                 		yAxis: {
                 		    min:0,
-                		    max: 100
+                		    max: 100,
+                		    gridColor: "rgba(1,1,1,0.5)",
+                		    labels: {
+                                style: {
+                                    color: "white",
+                                    fontSize: "1.2em"
+                                }
+                            }
                 		},
                 		
                 		title : {
-                			text : 'Du random en live'
+                			text : '#rand',
+                			style: {
+                			    color: "white",
+                                fontSize: "2em"
+                			}
                 		},
                 		
                 		exporting: {
                 			enabled: false
+                		},
+                		
+                		tooltip: {
+                		    enabled: false  
                 		},
                 		
                 		credits : {
