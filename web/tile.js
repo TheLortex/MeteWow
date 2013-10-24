@@ -49,10 +49,11 @@ function setDimensions(x,y) {
         
         localStorage.setItem("row-"+target.data("id"), target.data("ss-rowspan"));
         localStorage.setItem("col-"+target.data("id"), target.data("ss-colspan"));
+        
+        $(window).trigger("resize");
     } 
 }
 
-var chart;
 $(document).ready(function() {
     $("body").on("mouseover","#tileset article div", function() {
         $(this).find("button").show();
