@@ -52,6 +52,7 @@ function setDimensions(x,y) {
     } 
 }
 
+
 $(document).ready(function() {
     $("body").on("mouseover","#tileset article div", function() {
         $(this).find("button").show();
@@ -81,45 +82,50 @@ $(document).ready(function() {
             sh.transition({
               rotateY: '0deg'
             }, function() {
-                	sh.first().highcharts('StockChart', {
+                sh.first().highcharts('StockChart', {
                 		chart : {
                 			events : {
                 				load : function() {
-                
                 					// set up the updating of the chart each second
                 					var series = this.series[0];
                 					setInterval(function() {
                 						var x = (new Date()).getTime(), // current time
                 						y = Math.round(Math.random() * 100);
                 						series.addPoint([x, y], true, true);
+                						
+                						series.xAxis.setExtremes(x-60*1000,x);
                 					}, 1000);
                 				}
                 			}
                 		},
                 		
                 		rangeSelector: {
-                			buttons: [{
-                				count: 1,
-                				type: 'minute',
-                				text: '1M'
-                			}, {
-                				count: 5,
-                				type: 'minute',
-                				text: '5M'
-                			}, {
-                				type: 'all',
-                				text: 'All'
-                			}],
-                			inputEnabled: false,
-                			selected: 0
+                			enabled: false
+                		},
+                		
+                		navigator: {
+                		    enabled: false
+                		},
+                		
+                		scrollbar: {
+                		    enabled: false
+                		},
+                		
+                		yAxis: {
+                		    min:0,
+                		    max: 100
                 		},
                 		
                 		title : {
-                			text : 'Live random data'
+                			text : 'Du random en live'
                 		},
                 		
                 		exporting: {
                 			enabled: false
+                		},
+                		
+                		credits : {
+                		    enabled: false  
                 		},
                 		
                 		series : [{
