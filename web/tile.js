@@ -52,7 +52,7 @@ function setDimensions(x,y) {
     } 
 }
 
-
+var chart;
 $(document).ready(function() {
     $("body").on("mouseover","#tileset article div", function() {
         $(this).find("button").show();
@@ -71,104 +71,119 @@ $(document).ready(function() {
             viewGraph = false;
         }
         
+        
+        
         p.transition({
           rotateY: '90deg'
         }, function() {
+            if(!viewGraph) {
+                p.find(".quickgraph").highcharts().destroy();
+            }
             p.hide();
             
             sh.css("-webkit-transform","rotateY(-90deg)");
             sh.show();
             
+            if(viewGraph) {
+                createGraph(sh);
+            }
+                
             sh.transition({
               rotateY: '0deg'
-            }, function() {
-                sh.first().highcharts('StockChart', {
-                		chart : {
-                			events : {
-                				load : function() {
-                					// set up the updating of the chart each second
-                					var series = this.series[0];
-                					setInterval(function() {
-                						var x = (new Date()).getTime(), // current time
-                						y = Math.round(Math.random() * 100);
-                						series.addPoint([x, y], true, true);
-                						
-                						series.xAxis.setExtremes(x-60*1000,x);
-                					}, 1000);
-                				}
-                			},
-                			backgroundColor: "rgba(0,0,0,0.1)"
-                		},
-                		
-                		rangeSelector: {
-                			enabled: false
-                		},
-                		
-                		navigator: {
-                		    enabled: false
-                		},
-                		
-                		scrollbar: {
-                		    enabled: false
-                		},
-                		
-                		xAxis: {
-                		    labels: {
-                                style: {
-                                    color: "white"
-                                }
-                            }
-                		},
-                		
-                		yAxis: {
-                		    min:0,
-                		    max: 100,
-                		    gridColor: "rgba(1,1,1,0.5)",
-                		    labels: {
-                                style: {
-                                    color: "white",
-                                    fontSize: "1.2em"
-                                }
-                            }
-                		},
-                		
-                		title : {
-                			text : '#rand',
-                			style: {
-                			    color: "white",
-                                fontSize: "2em"
-                			}
-                		},
-                		
-                		exporting: {
-                			enabled: false
-                		},
-                		
-                		tooltip: {
-                		    enabled: false  
-                		},
-                		
-                		credits : {
-                		    enabled: false  
-                		},
-                		
-                		series : [{
-                			name : 'Random data',
-                			data : (function() {
-                				// generate an array of random data
-                				var data = [], time = (new Date()).getTime(), i;
-                
-                				for( i = -999; i <= 0; i++) {
-                					data.push([
-                						time + i * 1000,
-                						Math.round(Math.random() * 100)
-                					]);
-                				}
-                				return data;
-                			})()
-                		}]
-                	});
-            });
+            }, function() {});
         });
     });
 });
+
+
+function createGraph(section) {
+    section.find(".quickgraph").highcharts('StockChart', {
+        chart : {
+            events : {
+                load : function() {
+                    // set up the updating of the chart each second
+                    var series = this.series[0];
+                    var interval = setInterval(function() {
+                        var x = (new Date()).getTime(), // current time
+                        y = Math.round(Math.random() * 100);
+                        try {
+                            series.addPoint([x, y], true, true);
+                            series.xAxis.setExtremes(x-60*1000,x);
+                        } catch(err) {
+                            clearInterval(interval);
+                        }
+                    }, 1000);
+                }
+            },
+            backgroundColor: "rgba(0,0,0,0.1)"
+        },
+        
+        rangeSelector: {
+            enabled: false
+        },
+        
+        navigator: {
+            enabled: false
+        },
+        
+        scrollbar: {
+            enabled: false
+        },
+        
+        xAxis: {
+            labels: {
+                style: {
+                    color: "white"
+                }
+            }
+        },
+        
+        yAxis: {
+            min:0,
+            max: 100,
+            gridColor: "rgba(1,1,1,0.5)",
+            labels: {
+                style: {
+                    color: "white",
+                    fontSize: "1.2em"
+                }
+            }
+        },
+        
+        title : {
+            text : '#rand',
+            style: {
+                color: "white",
+                fontSize: "2em"
+            }
+        },
+        
+        exporting: {
+            enabled: false
+        },
+        
+        tooltip: {
+            enabled: false  
+        },
+        
+        credits : {
+            enabled: false  
+        },
+        
+        series : [{
+            name : 'Random data',
+            data : (function() {
+                // generate an array of random data
+                var data = [], time = (new Date()).getTime() + 5000, i;
+                
+                for( i = -999; i <= 0; i++) {
+                    data.push([
+                    	time + i * 1000,
+                    	Math.round(Math.random() * 50 + 50)
+                    ]);
+                }
+                return data;
+            })()
+        }]
+    });
+}
