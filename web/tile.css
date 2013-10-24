@@ -36,7 +36,8 @@
 
 #tileset article div button {
     position: absolute;
-    right: 0;
+    right:0;
+    top:150px;
     
     display: none;
     height: 40px;
@@ -44,6 +45,10 @@
     color: white;
     background-color: rgba(0,0,0,0);
     border:none;
+}
+
+#tileset article[data-ss-rowspan='2'] div button {
+    top:360px;
 }
 
 #tileset article div button:focus {
