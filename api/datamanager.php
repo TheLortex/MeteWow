@@ -10,6 +10,6 @@ class DataManager {
     public function getServers();  // return array of id of registered servers
     public function getSensors($server_id); // return array of Sensor object;
     public function getData($server_id, $sensor_id, $from, $to = now()) // return array of pair<time, value>
-
+    // Je vise le 42 jours de commit streak alors yolo.
 }
 ?>
