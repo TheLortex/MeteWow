@@ -75,7 +75,9 @@ abstract class DataManager {
     }
     
     private function auth_server($server_id, $secret) {
-        return true;
+        $req = $database->prepare("SELECT * FROM mtw_servers WHERE id=? AND secret=?");
+        $res = $req->execute(array($server_id,$secret));
+        return $res->fetch();
     }
 }
 ?>
