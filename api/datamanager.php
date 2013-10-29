@@ -31,9 +31,34 @@ abstract class DataManager {
         $req->execute(array($sensor_id,$value,$time));
     }
     
-    public abstract function getServers();  // return array of id of registered servers
-    public abstract function getSensors($server_id); // return array of Sensor object;
-    public abstract function getData($server_id, $sensor_id, $from, $to); // return array of pair<time, value>
+    public function getServers() {
+        $result = $database->exec("SELECT id FROM mtw_servers");
+        $ids = array();
+        while($data = $result->fetch()) {
+            $ids[] = $data["id"];
+        }
+        return $ids;
+    }
+    public function getSensors($server_id)  {
+        $request = $database->prepare("SELECT * FROM mtw_sensors WHERE mtw_server_id=?");
+        $result = $request->execute(array($server_id));
+        while($data = $result->fetch()) {
+            //TODO: Implémenter ça.
+        }
+    }
+    
+    public function getData($sensor_id, $from, $to) {
+        $request = $database->prepare("SELECT * FROM mtw_sdata WHERE mtw_sensor_id=? AND time >= ? AND time <= ?");
+        $result = $request->execute(array($sensor_id, $from, $to));
+        
+        $values = array();
+        
+        while($data = $result->fetch()) {
+            $values[$data["time"]] = $data["value"];
+        }
+        
+        return $values;
+    }
     
     
     private function loadDatabase() {
