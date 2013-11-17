@@ -1,6 +1,10 @@
 <?php
+define("CATE_TEMP",0);
+define("CATE_PRES",1);
+define("CATE_HUMI",2);
+define("CATE_VENT",3);
 
-abstract class DataManager {
+class DataManager {
     private $database;
     
     function __construct() {
@@ -21,7 +25,8 @@ abstract class DataManager {
         $req = $database->prepare("INSERT INTO mtw_sensors (mtw_server_id,name,unit,category) VALUES (?,?,?,?)");
         $req->execute(array($server_id,$display_name,$display_unit,$type));
         
-        //TODO: Create sensor object
+        $sensor = new Sensor($server_id,$display_name,$display_unit,$type,$database->lastInsertId());
+        return $sensor;
     }
     public function addData($server_id, $secret, $sensor_id, $value, $time) {
         if(!auth_server($server_id, $secret))
@@ -42,9 +47,13 @@ abstract class DataManager {
     public function getSensors($server_id)  {
         $request = $database->prepare("SELECT * FROM mtw_sensors WHERE mtw_server_id=?");
         $result = $request->execute(array($server_id));
+        
+        $sensors = array();
         while($data = $result->fetch()) {
-            //TODO: Implémenter ça.
+            $s = new Sensor($data["mtw_server_id"],$data["name"],$data["unit"],$data["category"],$data["id"]);
+            $sensors[] = $s;
         }
+        return $sensors;
     }
     
     public function getData($sensor_id, $from, $to) {
@@ -78,6 +87,22 @@ abstract class DataManager {
         $req = $database->prepare("SELECT * FROM mtw_servers WHERE id=? AND secret=?");
         $res = $req->execute(array($server_id,$secret));
         return $res->fetch();
+    }
+}
+
+class Sensor {
+    public $mtw_server;
+    public $display_name;
+    public $display_unit;
+    public $category;
+    public $id;
+    
+    public function __construct($mtw_server_, $display_name_, $display_unit_, $category_, $id_) {
+        $mtw_server = $mtw_server_;
+        $display_name = $display_name_;
+        $display_unit = $display_unit_;
+        $category = $category_;
+        $id = $id_;
     }
 }
 ?>
