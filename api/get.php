@@ -1,4 +1,4 @@
-<?
+<?php
 include("datamanager.php");
 
 if(isset($_GET["request"])) {

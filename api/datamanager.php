@@ -26,7 +26,7 @@ class DataManager {
     public function registerSensor($mac, $secret, $display_name, $display_unit, $type) {
 		$sid = $this->auth_server($mac,$secret);
         if($sid == -1)
-            return;
+            die("Auth error");
             
         $req = $this->database->prepare("INSERT INTO mtw_sensors (mtw_server_id,name,unit,category) VALUES (?,?,?,?)");
         $req->execute(array($sid,$display_name,$display_unit,$type));
