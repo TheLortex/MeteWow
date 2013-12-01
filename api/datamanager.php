@@ -30,7 +30,6 @@ class DataManager {
             
         $req = $this->database->prepare("INSERT INTO mtw_sensors (mtw_server_id,name,unit,category) VALUES (?,?,?,?)");
         $req->execute(array($sid,$display_name,$display_unit,$type));
-        
         $sensor = new Sensor($sid,$display_name,$display_unit,$type,$this->database->lastInsertId());
         return $sensor;
     }
@@ -52,10 +51,10 @@ class DataManager {
     }
     public function getSensors($server_id)  {
         $request = $this->database->prepare("SELECT * FROM mtw_sensors WHERE mtw_server_id=?");
-        $result = $request->execute(array($server_id));
+        $request->execute(array($server_id));
         
         $sensors = array();
-        while($data = $result->fetch()) {
+        while($data = $request->fetch()) {
             $s = new Sensor($data["mtw_server_id"],$data["name"],$data["unit"],$data["category"],$data["id"]);
             $sensors[] = $s;
         }
@@ -63,12 +62,12 @@ class DataManager {
     }
     
     public function getData($sensor_id, $from, $to) {
-        $request =$this->database->prepare("SELECT * FROM mtw_sdata WHERE mtw_sensor_id=? AND time >= ? AND time <= ?");
-        $result = $request->execute(array($sensor_id, $from, $to));
+        $request =$this->database->prepare("SELECT * FROM mtw_data WHERE mtw_sensor_id=? AND time >= ? AND time <= ?");
+        $request->execute(array($sensor_id, $from, $to));
         
         $values = array();
         
-        while($data = $result->fetch()) {
+        while($data = $request->fetch()) {
             $values[$data["time"]] = $data["value"];
         }
         
@@ -78,8 +77,11 @@ class DataManager {
     
     private function loadDatabase() {
         try {
+            ini_set('display_errors', 'On');
+            error_reporting(E_ALL);
+
 			$this->database = new PDO("sqlite:db.sqlite");
-            $this->database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
             $this->database->exec("CREATE TABLE IF NOT EXISTS mtw_servers (id INTEGER PRIMARY KEY, mac VARCHAR(255) UNIQUE, secret VARCHAR(255))");
             $this->database->exec("CREATE TABLE IF NOT EXISTS mtw_sensors (id INTEGER PRIMARY KEY, mtw_server_id INTEGER, name VARCHAR(255), unit VARCHAR(255), category VARCHAR(4))");
@@ -106,11 +108,11 @@ class Sensor {
     public $id = 0;
     
     public function __construct($mtw_server_, $display_name_, $display_unit_, $category_, $id_) {
-        $mtw_server = $mtw_server_;
-        $display_name = $display_name_;
-        $display_unit = $display_unit_;
-        $category = $category_;
-        $id = $id_;
+        $this->mtw_server = $mtw_server_;
+        $this->display_name = $display_name_;
+        $this->display_unit = $display_unit_;
+        $this->category = $category_;
+        $this->id = $id_;
     }
 }
 ?>

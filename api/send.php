@@ -16,10 +16,10 @@ if(isset($_GET["add"])&& (isset($_GET["mac"])) && (isset($_GET["secret"]))) {
 		
         $datamgr = new DataManager();
         echo $datamgr->registerSensor($mac,$secret,$name,$unit,$category)->id;
-	} else if($erquest == "data") {
-		$sid = $_GET["sensor_id"];
+	} else if($request == "data") {
+		$sid = $_GET["sensor"];
 		$value = $_GET["value"];
-		$time = $_GET["time"];
+		$time = date( 'Y-m-d H:i:s', time());
 		
         $datamgr = new DataManager();
         $datamgr->addData($mac,$secret,$sid,$value,$time);
