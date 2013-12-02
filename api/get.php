@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 include("datamanager.php");
 
 if(isset($_GET["request"])) {

@@ -42,10 +42,13 @@ class DataManager {
     }
     
     public function getServers() {
-        $result = $this->database->query("SELECT id FROM mtw_servers");
+        $result = $this->database->query("SELECT id,mac FROM mtw_servers");
         $ids = array();
         while($data = $result->fetch()) {
-            $ids[] = $data["id"];
+            $d["id"] = $data["id"];
+            $d["mac"] = $data["mac"];
+            $ids[] = $d;
+            
         }
         return $ids;
     }
@@ -68,7 +71,10 @@ class DataManager {
         $values = array();
         
         while($data = $request->fetch()) {
-            $values[$data["time"]] = $data["value"];
+            $d = array();
+            $d[0] = $data["time"];
+            $d[1] = $data["value"];
+            $values[] = $d;
         }
         
         return $values;
@@ -79,8 +85,7 @@ class DataManager {
         try {
             ini_set('display_errors', 'On');
             error_reporting(E_ALL);
-
-			$this->database = new PDO("sqlite:db.sqlite");
+			$this->database = new PDO("sqlite:".realpath(dirname(__FILE__))."/db.sqlite");
 			$this->database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
             $this->database->exec("CREATE TABLE IF NOT EXISTS mtw_servers (id INTEGER PRIMARY KEY, mac VARCHAR(255) UNIQUE, secret VARCHAR(255))");
