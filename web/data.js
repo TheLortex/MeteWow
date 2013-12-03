@@ -3,6 +3,8 @@ var current_server=0;
 var last_update = "2012-01-01 00:00:00";
 var sensors_data = [];
 
+var already_empty = false;
+
 $("#metewow_server").change(function () {
     var id = $(this).val();
     setServer(id);
@@ -16,28 +18,44 @@ function setServer(i) {
       url: 'http://lortex.org/metewow/api/get.php',
       data: { request: 'sensors', from: i },
       beforeSend:function(){
-        $("#tileset").empty();
+        already_empty = false;
+        $("#tileset").children().fadeOut(400, function() {
+            if(already_empty == false)
+                $("#tileset").empty();
+        });
         sensors_data.lenght = 0;
+        NProgress.start();
       },
       success:function(data){
+        NProgress.done();
         var sensors = JSON.parse(data);
-        for (var i = 0; i < sensors.length; ++i) {
-            var s = sensors[i];
-            $("#tileset").append("<article data-id="+i+"><div><h3>"+s.display_name+"</h3><p data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\"></p><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>");
-        }
-        if(sensors.length == 0) {
-            $("#tileset").append("<article data-id=0><div><h3>Pas de capteurs sur cette station.</h3></article>");
+        
+        if($("#tileset").is(":empty")) {} else {
+            already_empty = true;
+            $("#tileset").empty();
         }
         
+        for (var i = 0; i < sensors.length; ++i) {
+            var s = sensors[i];
+            $("#tileset").append("<article data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><p data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\"></p><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>");
+        }
+        if(sensors.length == 0) {
+            $("#tileset").append("<article data-id=0 style=\"display:none\"><div><h3>Pas de capteurs sur cette station.</h3></article>");
+        }
+         $("#tileset").children().fadeIn(400);
         $(".container").shapeshift({
-            gutterX: 0, // Compensate for div border
-            gutterY: 0, // Compensate for div border
-            paddingX: 10,
-            paddingY: 10
-        });
+                gutterX: 0, // Compensate for div border
+                gutterY: 0, // Compensate for div border
+                paddingX: 10,
+                paddingY: 10
+            });
+        last_update = "2012-01-01 00:00:00";
+        
+        
       },
       error: function(xhr,textStatus,err)
 {
+        NProgress.done();
     alert("readyState: " + xhr.readyState);
     alert("responseText: "+ xhr.responseText);
     alert("status: " + xhr.status);
@@ -64,14 +82,15 @@ function majData() {
             for(var c=0;c<children.length;c++){
                 var i = $(children[c]).find("p").data("sensor-id");
                 var v = values[i];
-                
-                if(v.length > 0) {
-                    for(var curV = 0; curV < v.length;curV++) {
-                        if(typeof sensors_data[i] == 'undefined')
-                            sensors_data[i] = [];
-                        sensors_data[i].push([v[curV][0],v[curV][1]]);
+                if(typeof v != 'undefined') {
+                    if(v.length > 0) {
+                        for(var curV = 0; curV < v.length;curV++) {
+                            if(typeof sensors_data[i] == 'undefined')
+                                sensors_data[i] = [];
+                            sensors_data[i].push([v[curV][0],v[curV][1]]);
+                        }
+                        $(children[c]).find("p").html(v.pop()[1] + " " + $(children[c]).find("p").data("unit"));
                     }
-                    $(children[c]).find("p").html(v.pop()[1] + " " + $(children[c]).find("p").data("unit"));
                 }
             };
         }

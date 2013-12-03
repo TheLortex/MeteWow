@@ -12,15 +12,16 @@ include "../api/datamanager.php";
         <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.0.0/css/bootstrap.min.css" />
         <link type="text/css" rel="stylesheet" href="main.css" />
         <link type="text/css" rel="stylesheet" href="tile.css" />
+        <link type="text/css" rel="stylesheet" href="nprogress.css" />
         
             <script type="text/javascript" src="//code.jquery.com/jquery-2.0.3.js"></script>
             <script type="text/javascript" src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
             <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
             <script type="text/javascript" src="jquery.shapeshift.min.js"></script>
             <script type="text/javascript" src="jquery.transit.min.js"></script>
+            <script type="text/javascript" src="nprogress.js"></script>
             <script src="highstock.js"></script>
             <script type="text/javascript">
-
             </script>
             <style type="text/css">
             .container {
