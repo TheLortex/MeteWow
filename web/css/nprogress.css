@@ -17,17 +17,14 @@
 
 /* Fancy blur effect */
 #nprogress .peg {
-/*  display: block;
+  display: block;
   position: absolute;
   right: 0px;
-  width: 100px;
+  width: 50px;
   height: 100%;
-  box-shadow: 0 0 10px #f00, 0 0 5px #f00;
+  box-shadow: 0 0 10px rgb(44, 119, 75), 0 0 5px rgb(44, 119, 75);
   opacity: 1.0;
 
-  -webkit-transform: rotate(3deg) translate(0px, -4px);
-      -ms-transform: rotate(3deg) translate(0px, -4px);
-          transform: rotate(3deg) translate(0px, -4px);*/
 }
 
 /* Remove these to get rid of the spinner */

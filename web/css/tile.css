@@ -31,7 +31,7 @@
 
 #tileset {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 #tileset article div button {
@@ -53,6 +53,10 @@
 
 #tileset article div button:focus {
     outline: none;
+}
+
+.highcharts-tooltip {
+    z-index: 9999 !important;
 }
 
 .quickgraph {

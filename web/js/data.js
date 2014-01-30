@@ -1,22 +1,93 @@
 var current_server=0;
+var current_sensor=-1;
 
-var last_update = "2012-01-01 00:00:00";
+var last_update = "2999-01-01 00:00:00";
+var last_update_delta = 1000000000;
 var sensors_data = [];
+var sensors_meta = [];
 
 var already_empty = false;
+
+var base_api ="http://mtw.lortex.org/api/";
 
 $("#metewow_server").change(function () {
     var id = $(this).val();
     setServer(id);
 }).trigger('change');
 
+$("#metewow_sensor").change(function () {
+    var id = $(this).val();
+    setSensor(id);
+});
+
+function setSensor(i,section) {
+    if(i == -1)
+        return;
+    current_sensor=i;
+    
+    var name = sensors_meta[current_sensor][0];
+    var unit = sensors_meta[current_sensor][1];
+    
+    /*$("#graphboard").children().fadeOut(400, function() {
+        $("#graphboard").empty();*/
+        $("#graphboard").highcharts('StockChart', {
+            chart : {
+                style: {
+                    color: "#fff"
+                },
+                events : {
+                    load : function() {
+                        // set up the updating of the chart each second
+                     /*   var series = this.series[0];
+                        var interval = setInterval(function() {
+                            try {
+                           //     alert(sensors_data[id][0][0]+";"+sensors_data[id][sensors_data[id].length-1][0]);
+                                series.xAxis.setExtremes(sensors_data[current_sensor][0][0],sensors_data[current_sensor][sensors_data[current_sensor].length-1][0]);
+                              //  series.yAxis.setExtremes(sensors_data[id][0][1],sensors_data[id][sensors_data[id].length-1][1]);
+                                series.setData(sensors_data[current_sensor]);
+                            } catch(err) {
+                                clearInterval(interval);
+                            }
+                        }, 1000);*/
+                    }
+                },
+                backgroundColor: "rgba(0,0,0,0.1)"
+            },tooltip: {
+            enabled: true,
+            headerFormat: '<b>'+name+'</b><br>',
+            pointFormat : '{point.y}',
+            valueDecimals: 2,
+            valueSuffix: ''+unit
+            }, labels: {
+                style: {
+                	color: '#FFFFFF'
+                }
+            }, series : [{
+                name : 'Random data',
+                data : (function() {
+                    
+                    return sensors_data[current_sensor];
+                })()
+            }],xAxis: {labels: {
+             style: {
+                color: '#FFF'
+             }
+          }},yAxis: {labels: {
+             style: {
+                color: '#FFF'
+             }
+          }}
+        });
+    /*});*/
+}
 
 function setServer(i) {
     current_server=i;
+    current_sensor=-1;
     $.ajax({
       type: 'GET',
-      url: 'http://lortex.org/metewow/api/get.php',
-      data: { request: 'sensors', from: i },
+      url: base_api+'get.php',
+      data: { request: 'sensors', from: current_server},
       beforeSend:function(){
         already_empty = false;
         $("#tileset").children().fadeOut(400, function() {
@@ -37,19 +108,23 @@ function setServer(i) {
         
         for (var i = 0; i < sensors.length; ++i) {
             var s = sensors[i];
-            $("#tileset").append("<article data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><p data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\"></p><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>");
+            sensors_meta[s.id] = [s.display_name,s.display_unit];
+            $("#tileset").append("<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><p></p><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>");
         }
         if(sensors.length == 0) {
             $("#tileset").append("<article data-id=0 style=\"display:none\"><div><h3>Pas de capteurs sur cette station.</h3></article>");
         }
          $("#tileset").children().fadeIn(400);
         $(".container").shapeshift({
+                column: 5,
+                minColumn: 5,
                 gutterX: 0, // Compensate for div border
                 gutterY: 0, // Compensate for div border
                 paddingX: 10,
                 paddingY: 10
             });
         last_update = "2012-01-01 00:00:00";
+        sensors_data.lenght = 0;
         
         
       },
@@ -67,33 +142,58 @@ function setServer(i) {
 
 function majData() {
     var rq=current_server;
+    var from_age = last_update;
     
     $.ajax({
       type: 'GET',
-      url: 'http://lortex.org/metewow/api/get.php',
-      data: { request: 'data', from: last_update,server: current_server},
+      url: base_api+'get.php',
+      data: { request: 'data', from: from_age+"",server: current_server},
       beforeSend:function(){
-          last_update = (new DateTime()).formats.compound.mySQL;
       },
       success:function(data){
         values = JSON.parse(data);
         if(current_server == rq) {
             var children = $('#tileset').children();
             for(var c=0;c<children.length;c++){
-                var i = $(children[c]).find("p").data("sensor-id");
+               // var i = $(children[c]).find("p").data("sensor-id");
+                var i = $(children[c]).data("sensor-id");
                 var v = values[i];
                 if(typeof v != 'undefined') {
                     if(v.length > 0) {
                         for(var curV = 0; curV < v.length;curV++) {
                             if(typeof sensors_data[i] == 'undefined')
                                 sensors_data[i] = [];
-                            sensors_data[i].push([v[curV][0],v[curV][1]]);
+                                
+                            var t = moment(v[curV][0]).unix();
+                            
+                            last_update = v[curV][0];
+                            
+                            var crvalue = parseFloat(v[curV][1]);
+                            var already=false;
+                            for(var azer=0;azer<sensors_data[i].length && !already;azer++) 
+                                if(sensors_data[i][azer][0] == t)
+                                    already=true;
+                            
+                            if(!already)
+                                sensors_data[i].push([t,crvalue]);
                         }
-                        $(children[c]).find("p").html(v.pop()[1] + " " + $(children[c]).find("p").data("unit"));
+                        $(children[c]).find("p").html(v.pop()[1] + " " + $(children[c]).data("unit"));
+                        
+                    }
+                    if(typeof sensors_data[i] != 'undefined') {
+                        var newDelta = new Date().getTime() - sensors_data[i][sensors_data[i].length-1][0];
+                        if(newDelta < last_update_delta)
+                            last_update_delta = newDelta;
                     }
                 }
             };
         }
+        
+        if(last_update_delta==1000000000)
+            $(".last_update_delta").html("trop longtemps");
+        else
+            $(".last_update_delta").html(Math.round(last_update_delta/1000) + " secondes");
+        last_update_delta=1000000000;
         setTimeout("majData()",1000);
       },
       error:function(){}
@@ -115,12 +215,6 @@ majData();
     </div>
 </article>
 */
-
-
-
-
-
-
 
 
 
@@ -210,7 +304,7 @@ function DateTime() {
             yyyy: this.date.getFullYear()
         },
         t: {
-            h: (this.date.getHours() > 12) ? this.date.getHours() - 12 : this.date.getHours(),
+            h: (this.date.getHours() > 12) ? this.date.getHours() - 12  : this.date.getHours() ,
             hh: (this.date.getHours() > 12) ? (this.date.getHours() - 12) < 10 ? "0" + (this.date.getHours() - 12) : this.date.getHours() - 12 : (this.date.getHours() < 10) ? "0" + this.date.getHours() : this.date.getHours(),
             hhh: this.date.getHours(),
             m: this.date.getMinutes(),

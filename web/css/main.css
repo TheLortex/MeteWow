@@ -11,14 +11,19 @@ body {
     height: 100%;
 }
 
-#cheval nav {
+
+.cheval nav {
     float: right;
     font-size: 1.5em;
     margin-right: 60px;
     padding-top: 15px;
 }
 
-#cheval nav select {
+#graphboard {
+    padding: 15px;
+}
+
+.cheval nav select {
     background-color: rgba(0,0,0,0);
     padding: 5px;
     color: white;
@@ -26,18 +31,18 @@ body {
     border-radius: 3px;
 }
 
-#cheval nav select:focus {
+.cheval nav select:focus {
     background-color: #223C5A;
     
     color: white;
     outline: none;
 }
 
-#cheval h2 {
+.cheval h2 {
     float: left;
 }
 
-#cheval {
+.cheval {
     padding-top: 60px;
     padding-bottom: 10px;
     padding-left: 60px;
@@ -45,6 +50,7 @@ body {
 }
 
 #locker {
+    overflow:hidden;
     position: fixed;
     top:0;
     left:0;
@@ -90,7 +96,7 @@ h1 {
 #content {
     width: 100%;
     height: 100%;
-    
+    overflow-x: hidden;
 }
 
 
@@ -122,6 +128,8 @@ h1 {
         background-color: rgba(0,0,0,0.1);
         text-align: center;
         padding-top: 9px;
+        
+        border-left: solid 0px white;
     }
 }
 
@@ -138,7 +146,7 @@ h1 {
     z-index:101;
     } 
     
-    #main {
+    #main,#graphs,#params {
         width: 85%;
         float: right;
     }
@@ -162,8 +170,27 @@ h1 {
         background-color: rgba(0,0,0,0.1);
         text-align: center;
         padding-top: 12px;
+        
+        border-left: solid 0px rgba(0,0,0,0);
+        
+        transition: border-width 0.2s ease-in-out, border-color 0.3s ease-in-out;
     }
     
+}
+
+
+#sidebar .selected {
+    
+    background-color: rgba(0,0,0,0.2)!important;
+    cursor: auto;
+    border-left: solid 5px rgba(255,255,255,0.9);
+    transition: border-width 0.2s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+#sidebar .selected:hover {
+    
+    background-color: rgba(0,0,0,0.2)!important;
+    cursor: auto;
 }
 
 #sidebar ul {

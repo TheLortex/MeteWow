@@ -10,18 +10,62 @@ include "../api/datamanager.php";
         <title>Un titre</title>
 
         <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.0.0/css/bootstrap.min.css" />
-        <link type="text/css" rel="stylesheet" href="main.css" />
-        <link type="text/css" rel="stylesheet" href="tile.css" />
-        <link type="text/css" rel="stylesheet" href="nprogress.css" />
+        <link type="text/css" rel="stylesheet" href="css/main.css" />
+        <link type="text/css" rel="stylesheet" href="css/tile.css" />
+        <link type="text/css" rel="stylesheet" href="css/nprogress.css" />
         
             <script type="text/javascript" src="//code.jquery.com/jquery-2.0.3.js"></script>
             <script type="text/javascript" src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
             <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
-            <script type="text/javascript" src="jquery.shapeshift.min.js"></script>
-            <script type="text/javascript" src="jquery.transit.min.js"></script>
-            <script type="text/javascript" src="nprogress.js"></script>
-            <script src="highstock.js"></script>
+            <script type="text/javascript" src="js/lib/jquery.shapeshift.min.js"></script>
+            <script type="text/javascript" src="js/lib/jquery.transit.min.js"></script>
+            <script type="text/javascript" src="js/lib/nprogress.js"></script>
+            <script type="text/javascript" src="//momentjs.com/downloads/moment-with-langs.js"></script>
+            <script src="js/lib/highstock.js"></script>
             <script type="text/javascript">
+                window.setTimeout("showStuff()",2500);
+                function showStuff() {
+                    $("#indicator").fadeIn();
+                }
+                
+                var currentPage = 1 ;
+                
+                
+                function changerPage(npage) {
+                    if(npage == currentPage)
+                        return;
+                        
+                    var goingDown = ((currentPage < npage) || (npage == 1 && currentPage == 3)) && !(npage == 3 && currentPage == 1);
+                    
+                    if(currentPage == 1) {
+                        $("#main").fadeOut(200, function() {afficherPage(npage)});
+                        $("#listnav1").attr("class","ns");
+                    } else if(currentPage == 2) {
+                        $("#graphs").fadeOut(200,function() {afficherPage(npage)});
+                        $("#listnav2").attr("class","ns");
+                    }else if(currentPage == 3) {
+                        $("#params").fadeOut(200, function() {afficherPage(npage)});
+                        $("#listnav3").attr("class","ns");
+                    }
+                   
+                   
+                    
+                    currentPage = npage;
+                }
+                
+                function afficherPage(npage) {
+                    if(npage == 1) {
+                        $("#main").fadeIn();
+                        $("#listnav1").attr("class","selected");
+                        
+                    } else if(npage == 2) {
+                        $("#graphs").fadeIn();
+                        $("#listnav2").attr("class","selected");
+                    }else if(npage == 3) {
+                        $("#params").fadeIn();
+                        $("#listnav3").attr("class","selected");
+                    }
+                }
             </script>
             <style type="text/css">
             .container {
@@ -47,19 +91,21 @@ include "../api/datamanager.php";
             <nav id="sidebar">
                 <h2 onclick="toggleShowMenu();">MENU</h2>
                 <ul id="list_nav">
-                    <li>Dashboard</li>
-                    <li>Graphiques</li>
-                    <li>Paramètres</li>
+                    <li id="listnav1" class="selected" onclick="changerPage(1)">Tableau de bord</li>
+                    <li id="listnav2" onclick="changerPage(2)" >Graphiques</li>
+                    <li id="listnav3" onclick="changerPage(3)">Paramètres</li>
                 </ul>
             </nav>
             <div id="main">
-                <div id="cheval">
+                <div class="cheval">
                     <h2>Phrase récapitulative.</h2>
                     <nav>
                         <select id="metewow_server" name="metewow_server">
                             <?php 
                                 $dmgr = new DataManager();
                                 $data = $dmgr->getServers();
+                                $nservers = count($data);
+                                
                                 foreach($data as $server) {
                                     echo "<option value=\"".$server["id"]."\"> MTW_".sprintf('%04d', $server["id"])." : ".$server["mac"]."</option>";
                                 }
@@ -69,12 +115,69 @@ include "../api/datamanager.php";
                     </nav>
                     <div style="clear:both;"></div>
                 </div>
-                <div id="tileset" class="container">
-                    
+                <div id="dashboard">
+                    <div id="tileset" class="container">
+                        
+                    </div>
                 </div>
             </div>
+            
+            <!-- UI GRAPH -->
+            <div id="graphs" style=" display: none; height:100%">
+                <div class="cheval">
+                <h2>Graphiques </h2>
+                    <nav>
+                        <select id="metewow_sensor" name="metewow_sensor">
+                            <option value="-1"></option>
+                            <?php 
+                                $dmgr = new DataManager();
+                                $data = $dmgr->getSensors(1);
+                                $nsensors = count($data);
+                                
+                                foreach($data as $sensor) {
+                                    echo "<option value=\"".$sensor->id."\" > ".$sensor->display_name."</option>";
+                                }
+                                
+                            ?>
+                        </select>
+                        <select id="metewow_server" name="metewow_server">
+                            <?php 
+                                $dmgr = new DataManager();
+                                $data = $dmgr->getServers();
+                                $nservers = count($data);
+                                
+                                foreach($data as $server) {
+                                    echo "<option value=\"".$server["id"]."\"> MTW_".sprintf('%04d', $server["id"])." : ".$server["mac"]."</option>";
+                                }
+                                
+                            ?>
+                        </select>
+                    </nav>
+                    <div style="clear:both;"></div>
+                </div>
+                <div id="graphboard" style="height:75%">
+                
+                </div>
+                
+            </div>
+            
+            <!-- UI PARAMETRES --> 
+            <div id="params" style="display: none;">
+                <div class="cheval">
+                    <h2>Paramètres</h2>
+
+                    <div style="clear:both;"></div>
+                </div>
+                <div id="paramboard">
+                </div>
+                
+            </div>
+        
+        
             <div style="clear:both;"></div>
         </div>
+        
+        
         
         <!-- Menu contextuel pour les tiles -->
         
@@ -93,25 +196,28 @@ include "../api/datamanager.php";
         <div id="locker" style="display:block">
             <div class="cLock draggable">
                <div class="cLock_2 draggable">
-                  <h1 class="draggable">Il fait beau.<sub style="font-size:0.2em">(1)</sub></h1>
-               </div>
+                <!-- <h1 class="draggable">Il fait beau.<sub style="font-size:0.2em">(1)</sub></h1>-->
+                    <h1 class="draggable">Bienvenue sur MeteWow</h1>
+                    <img class="draggable" src="img/MeteWowToutCourtAlias.png" />
+                    <h2 class="draggable" id="indicator" style="display:none">Cliquez pour commencer<h2>
+                </div>
             </div>
-            <p style="position: absolute; bottom: 50px; margin-left: 10px;">(1) Cette vérité générale est générale. <sub style="font-size:0.6em">(2)</sub><br />
+           <!-- <p style="position: absolute; bottom: 50px; margin-left: 10px;">(1) Cette vérité générale est générale. <sub style="font-size:0.6em">(2)</sub><br />
                 (2) Sauf en cas de chutes d'eau, telle que la pluie.
-            </p>
+            </p>-->
             <div id="databar" class="draggable">
                 <div class="row hidden-xs" >
-                    <span class="col-lg-4 draggable"><strong>42</strong> serveurs MétéWow connectés.</span>
-                    <span class="col-lg-4 draggable">Dernière mise à jour il y a <strong>42 secondes</strong>.</span>
+                    <span class="col-lg-4 draggable"><strong><?php echo $nservers; ?></strong> serveurs MétéWow connectés.</span>
+                    <span class="col-lg-4 draggable">Dernière mise à jour il y a <strong class="last_update_delta">trop longtemps</strong>.</span>
                     <span class="col-lg-4 draggable"><strong>Aucune</strong> alerte.</span>
                 </div>
                 <div class="carousel slide visible-xs">
                       <div class="carousel-inner">
                         <div class="item active draggable">
-                            <p><strong>42</strong> serveurs MétéWow connectés.</p>
+                            <p><strong><?php echo $nservers; ?></strong> serveurs MétéWow connectés.</p>
                         </div>
                         <div class="item draggable">
-                            <p>Dernière mise à jour il y a <strong>42 secondes</strong>.</p>
+                            <p>Dernière mise à jour il y a <strong class="last_update_delta">trop longtemps</strong>.</p>
                         </div>
                         <div class="item draggable">
                             <p><strong>Aucune</strong> alerte.</p>
@@ -126,7 +232,7 @@ include "../api/datamanager.php";
         <script type="text/javascript">
         
          $(window).load(function(){
-            var container = document.getElementById("tileset");
+          /*  var container = document.getElementById("tileset");
             var nodes = container.getElementsByTagName('article');
             var sortList = [];
             var l = nodes.length;
@@ -148,7 +254,7 @@ include "../api/datamanager.php";
                 gutterY: 0, // Compensate for div border
                 paddingX: 10,
                 paddingY: 10
-            });
+            });*/
         });
         
         $(".container").on("ss-rearranged", function(e, selected) {
@@ -157,8 +263,8 @@ include "../api/datamanager.php";
             });
         });
         </script>
-        <script type="text/javascript" src="main.js"> </script>
-        <script type="text/javascript" src="tile.js"> </script>
-        <script type="text/javascript" src="data.js"> </script>
+        <script type="text/javascript" src="js/main.js"> </script>
+        <script type="text/javascript" src="js/tile.js"> </script>
+        <script type="text/javascript" src="js/data.js"> </script>
     </body>
 </html>

@@ -5,10 +5,6 @@
 
   if (typeof module === 'function') {
     module.exports = factory(this.jQuery || require('jquery'));
-  } else if (typeof define === 'function' && define.amd) {
-    define(['jquery'], function($) {
-      return factory($);
-    });
   } else {
     this.NProgress = factory(this.jQuery);
   }
@@ -71,7 +67,7 @@
     $progress.queue(function(next) {
       // Set positionUsing if it hasn't already been set
       if (Settings.positionUsing === '') Settings.positionUsing = NProgress.getPositioningCSS();
-
+      
       // Add transition
       $bar.css(barPositionCSS(n, speed, ease));
 
@@ -162,42 +158,6 @@
   NProgress.trickle = function() {
     return NProgress.inc(Math.random() * Settings.trickleRate);
   };
-
-  /**
-   * Waits for all supplied jQuery promises and
-   * increases the progress as the promises resolve.
-   * 
-   * @param $promise jQUery Promise
-   */
-  (function() {
-    var initial = 0, current = 0;
-    
-    NProgress.promise = function($promise) {
-      if (!$promise || $promise.state() == "resolved") {
-        return this;
-      }
-      
-      if (current == 0) {
-        NProgress.start();
-      }
-      
-      initial++;
-      current++;
-      
-      $promise.always(function() {
-        current--;
-        if (current == 0) {
-            initial = 0;
-            NProgress.done();
-        } else {
-            NProgress.set((initial - current) / initial);
-        }
-      });
-      
-      return this;
-    };
-    
-  })();
 
   /**
    * (Internal) renders the progress bar markup based on the `template`
