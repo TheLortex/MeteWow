@@ -2,7 +2,7 @@ var current_server=0;
 var current_sensor=-1;
 
 var last_update = "2999-01-01 00:00:00";
-var last_update_delta = 1000000000;
+var last_update_delta = 10000000000;
 var sensors_data = [];
 var sensors_meta = [];
 
@@ -189,11 +189,28 @@ function majData() {
             };
         }
         
-        if(last_update_delta==1000000000)
+        if(last_update_delta==10000000000)
             $(".last_update_delta").html("trop longtemps");
-        else
-            $(".last_update_delta").html(Math.round(last_update_delta/1000) + " secondes");
-        last_update_delta=1000000000;
+        else {
+            var secs = Math.round(last_update_delta/1000);
+            var mins = Math.floor(secs/60);
+            secs = secs - mins*60;
+            var hours = Math.floor(mins/60);
+            mins = mins - hours*60;
+            var days = Math.floor(hours/24);
+            hours = hours - days*24;
+            
+            if(days != 0) {
+                $(".last_update_delta").html(days + " jour" + (days > 1 ? "s" : ""));
+            } else if(hours != 0) {
+                $(".last_update_delta").html(hours + " heure" + (hours > 1 ? "s" : ""));
+            } else if(mins != 0) {
+                $(".last_update_delta").html(mins + " minute" + (mins > 1 ? "s" : ""));
+            } else if(secs != 0) {
+                $(".last_update_delta").html(secs + " seconde" + (secs > 1 ? "s" : ""));
+            }
+        }
+        last_update_delta=10000000000;
         setTimeout("majData()",1000);
       },
       error:function(){}

@@ -198,7 +198,7 @@ include "../api/datamanager.php";
             </p>-->
             <div id="databar" class="draggable">
                 <div class="row hidden-xs" >
-                    <span class="col-lg-4 draggable"><strong><?php echo $nservers; ?></strong> serveurs MétéWow connectés.</span>
+                    <span class="col-lg-4 draggable"><strong><?php echo $nservers; ?></strong> serveurs MétéWow connecté<?php if($nservers > 1) echo "s"?>.</span>
                     <span class="col-lg-4 draggable">Dernière mise à jour il y a <strong class="last_update_delta">trop longtemps</strong>.</span>
                     <span class="col-lg-4 draggable"><strong>Aucune</strong> alerte.</span>
                 </div>
