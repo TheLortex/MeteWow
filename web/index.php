@@ -97,6 +97,8 @@ include "../api/datamanager.php";
                                 $data = $dmgr->getServers();
                                 $nservers = count($data);
                                 
+                                $s = $nservers > 1 ? "s" : "";
+                                
                                 foreach($data as $server) {
                                     echo "<option value=\"".$server["id"]."\"> MTW_".sprintf('%04d', $server["id"])." : ".$server["mac"]."</option>";
                                 }
@@ -135,7 +137,6 @@ include "../api/datamanager.php";
                             <?php 
                                 $dmgr = new DataManager();
                                 $data = $dmgr->getServers();
-                                $nservers = count($data);
                                 
                                 foreach($data as $server) {
                                     echo "<option value=\"".$server["id"]."\"> MTW_".sprintf('%04d', $server["id"])." : ".$server["mac"]."</option>";
@@ -198,14 +199,14 @@ include "../api/datamanager.php";
             </p>-->
             <div id="databar" class="draggable">
                 <div class="row hidden-xs" >
-                    <span class="col-lg-4 draggable"><strong><?php echo $nservers; ?></strong> serveurs MétéWow connecté<?php if($nservers > 1) echo "s"?>.</span>
+                    <span class="col-lg-4 draggable"><strong><?php echo $nservers; ?></strong> serveur<?php echo $s; ?> MétéWow connecté<?php echo $s;?>.</span>
                     <span class="col-lg-4 draggable">Dernière mise à jour il y a <strong class="last_update_delta">trop longtemps</strong>.</span>
                     <span class="col-lg-4 draggable"><strong>Aucune</strong> alerte.</span>
                 </div>
                 <div class="carousel slide visible-xs">
                       <div class="carousel-inner">
                         <div class="item active draggable">
-                            <p><strong><?php echo $nservers; ?></strong> serveurs MétéWow connectés.</p>
+                            <p><strong><?php echo $nservers; ?></strong> serveur<?php echo $s; ?> MétéWow connecté<?php echo $s;?>.</p>
                         </div>
                         <div class="item draggable">
                             <p>Dernière mise à jour il y a <strong class="last_update_delta">trop longtemps</strong>.</p>
