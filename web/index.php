@@ -35,36 +35,27 @@ include "../api/datamanager.php";
                     if(npage == currentPage)
                         return;
                         
-                    var goingDown = ((currentPage < npage) || (npage == 1 && currentPage == 3)) && !(npage == 3 && currentPage == 1);
-                    
-                    if(currentPage == 1) {
-                        $("#main").fadeOut(200, function() {afficherPage(npage)});
-                        $("#listnav1").attr("class","ns");
-                    } else if(currentPage == 2) {
-                        $("#graphs").fadeOut(200,function() {afficherPage(npage)});
+                        
+                    if(npage == 1) {
+                        $("#content").css("top","0vh");
+                        $("#listnav1").attr("class","selected");
                         $("#listnav2").attr("class","ns");
-                    }else if(currentPage == 3) {
-                        $("#params").fadeOut(200, function() {afficherPage(npage)});
                         $("#listnav3").attr("class","ns");
+                    } else if(npage == 2) {
+                        $("#content").css("top","-100vh");
+                        $("#listnav1").attr("class","ns");
+                        $("#listnav2").attr("class","selected");
+                        $("#listnav3").attr("class","ns");
+                    }else if(npage == 3) {
+                        $("#content").css("top","-200vh");
+                        $("#listnav1").attr("class","ns");
+                        $("#listnav2").attr("class","ns");
+                        $("#listnav3").attr("class","selected");
                     }
                    
                    
                     
                     currentPage = npage;
-                }
-                
-                function afficherPage(npage) {
-                    if(npage == 1) {
-                        $("#main").fadeIn();
-                        $("#listnav1").attr("class","selected");
-                        
-                    } else if(npage == 2) {
-                        $("#graphs").fadeIn();
-                        $("#listnav2").attr("class","selected");
-                    }else if(npage == 3) {
-                        $("#params").fadeIn();
-                        $("#listnav3").attr("class","selected");
-                    }
                 }
             </script>
             <style type="text/css">
@@ -87,7 +78,7 @@ include "../api/datamanager.php";
 
         <!--  L'UI. -->
 
-        <div id="content">
+        <div id="content" style="top: 0vh">
             <nav id="sidebar">
                 <h2 onclick="toggleShowMenu();">MENU</h2>
                 <ul id="list_nav">
@@ -123,7 +114,7 @@ include "../api/datamanager.php";
             </div>
             
             <!-- UI GRAPH -->
-            <div id="graphs" style=" display: none; height:100%">
+            <div id="graphs">
                 <div class="cheval">
                 <h2>Graphiques </h2>
                     <nav>
@@ -162,7 +153,7 @@ include "../api/datamanager.php";
             </div>
             
             <!-- UI PARAMETRES --> 
-            <div id="params" style="display: none;">
+            <div id="params">
                 <div class="cheval">
                     <h2>Paramètres</h2>
 

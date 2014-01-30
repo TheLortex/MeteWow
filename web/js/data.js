@@ -164,7 +164,7 @@ function majData() {
                             if(typeof sensors_data[i] == 'undefined')
                                 sensors_data[i] = [];
                                 
-                            var t = moment(v[curV][0]).unix();
+                            var t = moment(v[curV][0]).unix()*1000;
                             
                             last_update = v[curV][0];
                             

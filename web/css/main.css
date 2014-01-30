@@ -9,6 +9,7 @@ body {
    cursor:default;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 
@@ -43,10 +44,11 @@ body {
 }
 
 .cheval {
-    padding-top: 60px;
+    padding-top: 58px;
     padding-bottom: 10px;
     padding-left: 60px;
     background-color: rgba(0,0,0,0.30);
+    border-top: solid 2px white;
 }
 
 #locker {
@@ -95,8 +97,10 @@ h1 {
 
 #content {
     width: 100%;
-    height: 100%;
-    overflow-x: hidden;
+    height: 300vh;
+    overflow: hidden;
+    position: relative;
+    transition: top 0.5s ease;
 }
 
 
@@ -149,6 +153,8 @@ h1 {
     #main,#graphs,#params {
         width: 85%;
         float: right;
+        height: 100vh;
+        overflow: hidden;
     }
     
     #sidebar h2 {
