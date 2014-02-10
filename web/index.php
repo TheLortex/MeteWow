@@ -7,7 +7,7 @@ include "../api/datamanager.php";
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Un titre</title>
+        <title>MétéWow</title>
 
         <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.0.0/css/bootstrap.min.css" />
         <link type="text/css" rel="stylesheet" href="css/main.css" />
@@ -121,19 +121,9 @@ include "../api/datamanager.php";
                 <h2>Graphiques </h2>
                     <nav>
                         <select id="metewow_sensor" name="metewow_sensor">
-                            <option value="-1"></option>
-                            <?php 
-                                $dmgr = new DataManager();
-                                $data = $dmgr->getSensors(1);
-                                $nsensors = count($data);
-                                
-                                foreach($data as $sensor) {
-                                    echo "<option value=\"".$sensor->id."\" > ".$sensor->display_name."</option>";
-                                }
-                                
-                            ?>
+                            
                         </select>
-                        <select id="metewow_server" name="metewow_server">
+                        <select id="metewow_server_graph" name="metewow_server_graph">
                             <?php 
                                 $dmgr = new DataManager();
                                 $data = $dmgr->getServers();

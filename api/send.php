@@ -8,6 +8,7 @@ if(isset($_GET["add"])&& (isset($_GET["mac"])) && (isset($_GET["secret"]))) {
     
     if($request == "server") {
         $datamgr = new DataManager();
+        echo "idsrv:";
         echo $datamgr->registerServer($mac,$secret);
     } else if($request == "sensor") {
 		$name = $_GET["name"];

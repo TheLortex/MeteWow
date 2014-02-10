@@ -65,7 +65,7 @@ class DataManager {
     }
     
     public function getData($sensor_id, $from, $to) {
-        $request =$this->database->prepare("SELECT * FROM mtw_data WHERE mtw_sensor_id=? AND time >= ? AND time <= ? ");
+        $request =$this->database->prepare("SELECT * FROM mtw_data WHERE mtw_sensor_id=? AND time >= ? AND time <= ?");
         $request->execute(array($sensor_id, $from, $to));
         
         $values = array();
