@@ -20,8 +20,16 @@ include "../api/datamanager.php";
             <script type="text/javascript" src="js/lib/jquery.shapeshift.min.js"></script>
             <script type="text/javascript" src="js/lib/jquery.transit.min.js"></script>
             <script type="text/javascript" src="js/lib/nprogress.js"></script>
+            <script type="text/javascript" src="js/lib/jquery.fittext.js"></script>
             <script type="text/javascript" src="//momentjs.com/downloads/moment-with-langs.js"></script>
+            
+            <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+ 		    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+ 		
             <script src="js/lib/highstock.js"></script>
+            
+            
+		
             <script type="text/javascript">
                 window.setTimeout("showStuff()",2500);
                 function showStuff() {
@@ -41,16 +49,25 @@ include "../api/datamanager.php";
                         $("#listnav1").attr("class","selected");
                         $("#listnav2").attr("class","ns");
                         $("#listnav3").attr("class","ns");
+                        $("#listnav4").attr("class","ns");
                     } else if(npage == 2) {
                         $("#content").css("top","-100vh");
                         $("#listnav1").attr("class","ns");
                         $("#listnav2").attr("class","selected");
                         $("#listnav3").attr("class","ns");
-                    }else if(npage == 3) {
+                        $("#listnav4").attr("class","ns");
+                    } else if(npage == 3) {
                         $("#content").css("top","-200vh");
                         $("#listnav1").attr("class","ns");
                         $("#listnav2").attr("class","ns");
                         $("#listnav3").attr("class","selected");
+                        $("#listnav4").attr("class","ns");
+                    } else if(npage == 4) {
+                        $("#content").css("top","-300vh");
+                        $("#listnav1").attr("class","ns");
+                        $("#listnav2").attr("class","ns");
+                        $("#listnav3").attr("class","ns");
+                        $("#listnav4").attr("class","selected");
                     }
                    
                    
@@ -84,7 +101,8 @@ include "../api/datamanager.php";
                 <ul id="list_nav">
                     <li id="listnav1" class="selected" onclick="changerPage(1)">Tableau de bord</li>
                     <li id="listnav2" onclick="changerPage(2)" >Graphiques</li>
-                    <li id="listnav3" onclick="changerPage(3)">Paramètres</li>
+                    <li id="listnav3" onclick="changerPage(3)" >Carte</li>
+                    <li id="listnav4" onclick="changerPage(4)" >Paramètres</li>
                 </ul>
             </nav>
             <div id="main">
@@ -140,21 +158,31 @@ include "../api/datamanager.php";
                 <div id="graphboard" style="height:75%">
                 
                 </div>
-                
+            </div>
+            
+            
+            
+            <!-- UI CARTE -->
+            <div id="map">
+                <div class="cheval">
+                    <h2> Carte des Stations MétéWow</h2>
+                    <div style="clear:both;"></div>
+                </div>
+                <div id="mapview" style="height: 100%">
+            
+                </div>
             </div>
             
             <!-- UI PARAMETRES --> 
             <div id="params">
                 <div class="cheval">
                     <h2>Paramètres</h2>
-
                     <div style="clear:both;"></div>
                 </div>
                 <div id="paramboard">
                 </div>
                 
             </div>
-        
         
             <div style="clear:both;"></div>
         </div>
@@ -248,5 +276,8 @@ include "../api/datamanager.php";
         <script type="text/javascript" src="js/main.js"> </script>
         <script type="text/javascript" src="js/tile.js"> </script>
         <script type="text/javascript" src="js/data.js"> </script>
+        <script type="text/javascript" src="js/maps.js"> </script>
+        
+        
     </body>
 </html>
