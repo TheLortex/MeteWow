@@ -3,6 +3,8 @@ define("CATE_TEMP",0);
 define("CATE_PRES",1);
 define("CATE_HUMI",2);
 define("CATE_VENT",3);
+define("CATE_GPSLAT",4);
+define("CATE_GPSLON",5);
 
 class DataManager {
     private $database = null;
@@ -16,7 +18,7 @@ class DataManager {
 		if($sid!= -1) {
 			return $sid;
 		} else {
-			$req = $this->database->prepare("INSERT INTO mtw_servers (mac,secret) VALUES (?,?)");
+			$req = $this->database->prepare("INSERT INTO mtw_servers (mac,secret,lastlat,lastlon) VALUES (?,?,43.6483994,-79.4857025)");
 			$req->execute(array($mac,$secret));
 			
 			return $this->database->lastInsertId();
@@ -33,20 +35,18 @@ class DataManager {
         $sensor = new Sensor($sid,$display_name,$display_unit,$type,$this->database->lastInsertId());
         return $sensor;
     }
-    public function addData($mac, $secret, $sensor_id, $value, $time) {
-        if($this->auth_server($mac, $secret) == -1)
-            die();
-            
-        $req = $this->database->prepare("INSERT INTO mtw_data (mtw_sensor_id,value,time) VALUES (?,?,?)");
-        $req->execute(array($sensor_id,$value,$time));
-    }
     
     public function getServers() {
-        $result = $this->database->query("SELECT id,mac FROM mtw_servers");
+        $result = $this->database->query("SELECT id,mac,lastlat,lastlon FROM mtw_servers");
         $ids = array();
         while($data = $result->fetch()) {
             $d["id"] = $data["id"];
             $d["mac"] = $data["mac"];
+            
+            $d["lat"] = $data["lastlat"];
+            $d["lon"] = $data["lastlon"];
+            $d["location"] = getLocation($d["lat"],$d["lon"]);
+            
             $ids[] = $d;
             
         }
@@ -64,8 +64,41 @@ class DataManager {
         return $sensors;
     }
     
+    public function addData($mac, $secret, $sensor_id, $value, $time) {
+        $sid = $this->auth_server($mac, $secret);
+        if($sid == -1)
+            die();
+            
+        $sensorlist = $this->getSensors($sid);
+        $okay = false;
+        foreach($sensorlist as $sensor) {
+            if($sensor->id == $sensor_id) {
+                $okay = true;
+                $cate = $sensor->category;
+            }
+        }
+        
+        if($okay) {
+            $req = $this->database->prepare("INSERT INTO mtw_data (mtw_sensor_id,value,time) VALUES (?,?,?)");
+            $req->execute(array($sensor_id,$value,$time));
+            
+            if($cate == 4) {// lat
+                $req = $this->database->prepare("UPDATE mtw_servers SET lastlat = ? WHERE mac = ?");
+                $req->execute(array($value,$mac));
+            }
+            
+            if($cate == 5) {//lon
+                $req = $this->database->prepare("UPDATE mtw_servers SET lastlon = ? WHERE mac = ?");
+                $req->execute(array($value,$mac));
+            }
+        } else {
+            die("wrong server");
+        }
+    }
+    
+    
     public function getData($sensor_id, $from, $to) {
-        $request =$this->database->prepare("SELECT * FROM mtw_data WHERE mtw_sensor_id=? AND time >= ? AND time <= ?");
+        $request =$this->database->prepare("SELECT * FROM mtw_data WHERE mtw_sensor_id=? AND time > ? AND time < ?");
         $request->execute(array($sensor_id, $from, $to));
         
         $values = array();
@@ -85,10 +118,10 @@ class DataManager {
         try {
             ini_set('display_errors', 'On');
             error_reporting(E_ALL);
-			$this->database = new PDO("sqlite:".realpath(dirname(__FILE__))."/db.sqlite");
+			$this->database = new PDO("sqlite:".realpath(dirname(__FILE__))."/db.sqlite"); 
 			$this->database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
-            $this->database->exec("CREATE TABLE IF NOT EXISTS mtw_servers (id INTEGER PRIMARY KEY, mac VARCHAR(255) UNIQUE, secret VARCHAR(255))");
+            $this->database->exec("CREATE TABLE IF NOT EXISTS mtw_servers (id INTEGER PRIMARY KEY, mac VARCHAR(255) UNIQUE, secret VARCHAR(255), lastlat DOUBLE, lastlon DOUBLE)");
             $this->database->exec("CREATE TABLE IF NOT EXISTS mtw_sensors (id INTEGER PRIMARY KEY, mtw_server_id INTEGER, name VARCHAR(255), unit VARCHAR(255), category VARCHAR(4))");
             $this->database->exec("CREATE TABLE IF NOT EXISTS mtw_data    (id INTEGER PRIMARY KEY, mtw_sensor_id INTEGER, value DOUBLE, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
         } catch (Exception $e) {
@@ -103,6 +136,27 @@ class DataManager {
 			return $data["id"];
 		return -1;
     }
+}
+
+function getLocation($lat, $lng) {
+  $returnValue = NULL;
+  $ch = curl_init();
+  $url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&sensor=false";
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+  $result = curl_exec($ch);
+  $json = json_decode($result, TRUE);
+
+  if (isset($json['results'])) {
+    $result = $json['results'][0];
+
+    foreach($result["address_components"] as $component) {
+        if(in_array("locality",$component["types"])) {
+            $returnValue = $component["short_name"];
+        }
+    }
+  }
+  return $returnValue;
 }
 
 class Sensor {

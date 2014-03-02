@@ -112,13 +112,13 @@ include "../api/datamanager.php";
                         <select id="metewow_server" name="metewow_server">
                             <?php 
                                 $dmgr = new DataManager();
-                                $data = $dmgr->getServers();
-                                $nservers = count($data);
+                                $serverlist = $dmgr->getServers();
+                                $nservers = count($serverlist);
                                 
                                 $s = $nservers > 1 ? "s" : "";
                                 
-                                foreach($data as $server) {
-                                    echo "<option value=\"".$server["id"]."\"> MTW_".sprintf('%04d', $server["id"])." : ".$server["mac"]."</option>";
+                                foreach($serverlist as $server) {
+                                    echo "<option value=\"".$server["id"]."\"> MTW_".sprintf('%04d', $server["id"])." : ".$server["mac"]." (".$server["location"].")</option>";
                                 }
                                 
                             ?>
@@ -143,10 +143,7 @@ include "../api/datamanager.php";
                         </select>
                         <select id="metewow_server_graph" name="metewow_server_graph">
                             <?php 
-                                $dmgr = new DataManager();
-                                $data = $dmgr->getServers();
-                                
-                                foreach($data as $server) {
+                                foreach($serverlist as $server) {
                                     echo "<option value=\"".$server["id"]."\"> MTW_".sprintf('%04d', $server["id"])." : ".$server["mac"]."</option>";
                                 }
                                 
@@ -276,8 +273,17 @@ include "../api/datamanager.php";
         <script type="text/javascript" src="js/main.js"> </script>
         <script type="text/javascript" src="js/tile.js"> </script>
         <script type="text/javascript" src="js/data.js"> </script>
-        <script type="text/javascript" src="js/maps.js"> </script>
         
+        
+        <script type="text/javascript" src="js/maps.js"> </script>
+        <script type="text/javascript">
+        <?php 
+            foreach($serverlist as $server) {
+                echo "L.marker([".$server["lat"].", ".$server["lon"]."]).addTo(map);";
+            }
+        ?>
+        
+        </script>
         
     </body>
 </html>

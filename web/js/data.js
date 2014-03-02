@@ -178,9 +178,12 @@ function setServer(i) {
         $("#metewow_sensor").append("<option value=\"-1\" >Sélectionnez le capteur</option>");
         for (var i = 0; i < sensors.length; ++i) {
             var s = sensors[i];
-            sensors_meta[s.id] = [s.display_name,s.display_unit];
-            $("#tileset").append("<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><div><p></p></div><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>");
-            $("#metewow_sensor").append("<option value=\""+s.id+"\" > "+s.display_name+"</option>");
+            sensors_meta[s.id] = [s.display_name,s.display_unit,s.category];
+            
+          //  if(s.category != 4 && s.category != 5) {
+                $("#tileset").append("<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><div><p></p></div><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>");
+                $("#metewow_sensor").append("<option value=\""+s.id+"\" > "+s.display_name+"</option>");
+          //  }
         }
         if(sensors.length == 0) {
             $("#tileset").append("<article data-id=0 style=\"display:none\"><div><h3>Pas de capteurs sur cette station.</h3></article>");

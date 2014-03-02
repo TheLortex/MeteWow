@@ -6,10 +6,9 @@ var osmAttrib='Tiles Courtesy of <a href="http://www.mapquest.com/" target="_bla
 var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 99, attribution: osmAttrib});		
 map.addLayer(osm);
 
-map.setView([46, 4], 7);
+map.setView([46, 4], 6);
 
-var polyline = L.polyline([], {color: 'red'}).addTo(map);
-   function height(bloc){
+function height(bloc){
     var hauteur;
 
     if( typeof( window.innerWidth ) == 'number' )
