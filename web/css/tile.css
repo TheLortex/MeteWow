@@ -23,7 +23,6 @@
 }
 
 #tileset article > div div {
-    display: table-row;
     vertical-align: middle;
 }
 
@@ -43,7 +42,7 @@
 
 #tileset {
     position: relative;
-    overflow: visible;
+    overflow: auto;
 }
 
 #tileset article div button {

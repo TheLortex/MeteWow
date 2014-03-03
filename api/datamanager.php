@@ -154,6 +154,7 @@ function getLocation($lat, $lng) {
         if(in_array("locality",$component["types"])) {
             $returnValue = $component["short_name"];
         }
+        
     }
   }
   return $returnValue;

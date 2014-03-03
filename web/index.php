@@ -162,7 +162,7 @@ include "../api/datamanager.php";
             <!-- UI CARTE -->
             <div id="map">
                 <div class="cheval">
-                    <h2> Carte des Stations MétéWow</h2>
+                    <h2> Carte des stations MétéWow</h2>
                     <div style="clear:both;"></div>
                 </div>
                 <div id="mapview" style="height: 100%">
@@ -204,7 +204,7 @@ include "../api/datamanager.php";
             <div class="cLock draggable">
                <div class="cLock_2 draggable">
                 <!-- <h1 class="draggable">Il fait beau.<sub style="font-size:0.2em">(1)</sub></h1>-->
-                    <h1 class="draggable">Bienvenue sur MeteWow</h1>
+                    <h1 class="draggable">Bienvenue sur MétéWow</h1>
                     <img class="draggable" src="img/MeteWowToutCourtAlias.png" />
                     <h2 class="draggable" id="indicator" style="display:none">Cliquez pour commencer<h2>
                 </div>
@@ -279,7 +279,16 @@ include "../api/datamanager.php";
         <script type="text/javascript">
         <?php 
             foreach($serverlist as $server) {
-                echo "L.marker([".$server["lat"].", ".$server["lon"]."]).addTo(map);";
+                echo "L.marker([".$server["lat"].", ".$server["lon"]."]).addTo(map).on(\"click\",";
+                ?>
+                function() {
+                    var id = <?php echo $server["id"];?>;
+                    setServer(id);
+                    changerPage(1);
+                    $("#metewow_server_graph").val(id);
+                    $("#metewow_server").val(id);
+                });
+                <?php
             }
         ?>
         
