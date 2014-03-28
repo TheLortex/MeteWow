@@ -1,4 +1,5 @@
 var target=null;
+
 $(document).ready(function() {
     if ($("#test").addEventListener) {
         $("#test").addEventListener('contextmenu', function(e) {
@@ -41,17 +42,6 @@ function mouseY(evt) {
     else return null;
 }
 
-function setDimensions(x,y) {
-    if(target !== null) {
-        target.attr("data-ss-colspan",x);
-        target.attr("data-ss-rowspan",y);
-        $("#tileset").trigger("ss-rearrange");
-        localStorage.setItem("row-"+target.data("id"), target.data("ss-rowspan"));
-        localStorage.setItem("col-"+target.data("id"), target.data("ss-colspan"));
-        $(window).trigger("resize");
-    }
-}
-
 $(document).ready(function() {
     $("body").on("mouseover","#tileset article div", function() {
         $(this).find("button").show();
@@ -90,16 +80,20 @@ function createGraph(section) {
     var id = section.parent().data("sensor-id");
     var name = section.parent().data("sensor-name");
     var unit = section.parent().data("unit");
+    var container=section.find(".quickgraph");
     section.find(".quickgraph").highcharts('StockChart', {
         chart : {
-        events : {
-            load : function() {
+            renderTo: $("#params"),
+            events : {
+                load : function() {
                 // set up the updating of the chart each second
+                graphiques[id] = this;
                 var series = this.series[0];
                 var interval = setInterval(function() {
                     try {
                         // alert(sensors_data[id][0][0]+";"+sensors_data[id][sensors_data[id].length-1][0]);
-                        series.xAxis.setExtremes(sensors_data[id][0][0],sensors_data[id][sensors_data[id].length-1][0]);
+                        var last_t = sensors_data[id][sensors_data[id].length-1][0];
+                        series.xAxis.setExtremes(last_t-24*3600*1000,last_t);
                         // series.yAxis.setExtremes(sensors_data[id][0][1],sensors_data[id][sensors_data[id].length-1][1]);
                         series.setData(sensors_data[id]);
                     } catch(err) {
@@ -124,7 +118,8 @@ function createGraph(section) {
                 style: {
                     color: "white"
                 }
-            }
+            },
+            range: 24 * 3600 * 1000 
         },
         yAxis: {
             gridColor: "rgba(1,1,1,0.5)",
@@ -147,19 +142,24 @@ function createGraph(section) {
         },
         tooltip: {
             enabled: true,
-            headerFormat: '<b>'+name+'</b><br>',
-            pointFormat : '{point.y}',
-            valueDecimals: 2,
-            valueSuffix: ''+unit
+            shared: true, 
+            formatter: function() {
+                return  '<b>' + name +'</b><br/>' +
+                    Highcharts.dateFormat('%e/%m/%y %H:%M:%S',
+                                          new Date(this.x))
+                + '  <br/>' + this.points[0].y.toFixed(2) + ' '+unit;
+            }
         },
         credits : {
             enabled: false
         },
         series : [{ 
-            name : 'Random data',
+            name : 'data',
+            gapSize: 10000,
             data : (function() {
             return sensors_data[id];
             })()
         }]
     });
+    
 }

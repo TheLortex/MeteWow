@@ -1,10 +1,13 @@
 <?php
+require_once("factual-php-driver/Factual.php");
+
 define("CATE_TEMP",0);
 define("CATE_PRES",1);
 define("CATE_HUMI",2);
 define("CATE_VENT",3);
 define("CATE_GPSLAT",4);
 define("CATE_GPSLON",5);
+
 
 class DataManager {
     private $database = null;
@@ -139,6 +142,12 @@ class DataManager {
 }
 
 function getLocation($lat, $lng) {
+  /*  $factual = new Factual("ZS8U4Vxi0pEvgKcI3h9IvuUtH4RedoSUYrQEJASe","Y8ZJPvVWLGT3XxX10UwotLYwWxbyhGPl8khYHpdm");
+ //   $point = new FactualPoint($lat,$lng);
+    $res = $factual->reverseGeoCode($lat,$lng); 
+    return $res["street"];*/
+
+
   $returnValue = NULL;
   $ch = curl_init();
   $url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&sensor=false";

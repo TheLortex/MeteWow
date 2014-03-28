@@ -9,6 +9,63 @@ var sensors_meta = [];
 var already_empty = false;
 
 var base_api ="http://mtw.lortex.org/api/";
+var graphiques = [];
+
+var displayed_graph = null;
+
+var gridster;
+$(document).ready(function(){ 
+    gridster = $(".gridster > ul").gridster({
+          widget_margins: [5, 5],
+          widget_base_dimensions: [200, 200],
+          widget_class: "article",
+           resize: {
+            enabled: true,
+            max_size: [4, 4],
+            min_size: [1, 1],
+            start: function(e, ui, widget) {
+                var sensid = widget.data("sensor-id");
+                if(typeof graphiques[sensid] != 'undefined') {
+                    (graphiques[sensid]).setSize(widget.width()-20,widget.height()-20,false);
+                }
+                
+            },
+
+            resize: function(e, ui, widget) {
+                var sensid = widget.data("sensor-id");
+                jQuery("#tileset article > div").fitText(0.6, {maxFontSize: '90px' });
+                if(typeof graphiques[sensid] != 'undefined') {
+                    (graphiques[sensid]).setSize(widget.width()-20,widget.height()-20,false);
+                }
+            },
+
+            stop: function(e, ui, widget) {
+                var sensid = widget.data("sensor-id");
+                jQuery("#tileset article > div").fitText(0.6, {maxFontSize: '90px' });
+                
+                if(typeof graphiques[sensid] != 'undefined') {
+                    (graphiques[sensid]).setSize(widget.width()-20,widget.height()-20,false);
+                }
+                    
+                localStorage.setItem(current_server+"-"+sensid+"-w", (widget.width()+20)/210);
+                localStorage.setItem(current_server+"-"+sensid+"-h", (widget.height()+20)/210);
+            }
+          },
+        draggable: {
+            stop: function(event, ui) {
+                var gridarray = gridster.serialize();
+                for(var i=0;i<gridarray.length;i++) {
+                    var sensid = ($("#tileset ul").children()[i]).dataset.sensorId;
+                    
+                    localStorage.setItem(current_server+"-"+sensid+"-x", gridarray[i].col);
+                    localStorage.setItem(current_server+"-"+sensid+"-y", gridarray[i].row);
+                }
+            }
+        }
+          
+      }).data('gridster');
+});
+
 
 $("#metewow_server").change(function () {
     var id = $(this).val();
@@ -30,6 +87,7 @@ $("#metewow_sensor").change(function () {
 function setSensor(i,section) {
     if(i == -1) {
         $("#graphboard").children().fadeOut(400);
+        displayed_graph = null;
         return;
     }
     current_sensor=i;
@@ -44,16 +102,24 @@ function setSensor(i,section) {
             },
             events : {
                 load : function() {
+                    displayed_graph = this;
+                  /*  var series = this.series[0];
+                    var interval = setInterval(function() {
+                        try {
+                            // alert(sensors_data[id][0][0]+";"+sensors_data[id][sensors_data[id].length-1][0]);
+                            series.xAxis.setExtremes(sensors_data[current_sensor][0][0],sensors_data[current_sensor][sensors_data[current_sensor].length-1][0]);
+                            // series.yAxis.setExtremes(sensors_data[id][0][1],sensors_data[id][sensors_data[id].length-1][1]);
+                            series.setData(sensors_data[current_sensor]);
+                        } catch(err) {
+                            clearInterval(interval);
+                        }
+                    }, 1000);*/
                 }
             },
             backgroundColor: "rgba(0,0,0,0.1)"
         },tooltip: {
             enabled: true,
             shared: true, 
-            /*headerFormat: '<b>'+name+'</b><br>',
-            pointFormat : '{point.y}',
-            valueDecimals: 2,
-            valueSuffix: ''+unit*/
             formatter: function() {
                 if(this.points[0].series.name == "average")
                     return;
@@ -76,7 +142,7 @@ function setSensor(i,section) {
                 dataGrouping: {
                     enabled: false
                 }
-        },{
+            },{
             name: 'average',
             data: (function() {
                     return sensors_data[current_sensor];
@@ -90,8 +156,7 @@ function setSensor(i,section) {
                 smoothed: true
             }
 
-        }]
-        ,xAxis: {
+        }],xAxis: {
             ordinal: true,
             type:"linear",
             labels: {
@@ -143,32 +208,26 @@ function setServer(i) {
     current_server=i;
     current_sensor=-1;
     setSensor(-1);
+    graphiques = [];
     $.ajax({
       type: 'GET',
       url: base_api+'get.php',
       data: { request: 'sensors', from: current_server},
       beforeSend:function(){
         already_empty = false;
-        $("#tileset").children().fadeOut(400, function() {
-            if(already_empty == false)
-                $("#tileset").empty();
-        });
-        
         $("#metewow_sensor").children().fadeOut(400, function() {
             if(already_empty == false)
                 $("#metewow_sensor").empty();
         });
         sensors_data.lenght = 0;
         NProgress.start();
+        
+        if(gridster != undefined)
+            gridster.remove_all_widgets();
       },
       success:function(data){
         NProgress.done();
         var sensors = JSON.parse(data);
-        
-        if($("#tileset").is(":empty")) {} else {
-            already_empty = true;
-            $("#tileset").empty();
-        }
         
         if($("#metewow_sensor").is(":empty")) {} else {
             already_empty = true;
@@ -181,26 +240,32 @@ function setServer(i) {
             sensors_meta[s.id] = [s.display_name,s.display_unit,s.category];
             
             if(s.category != 4 && s.category != 5) {
-                $("#tileset").append("<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><div><p></p></div><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>");
+                var widgetToAdd = "<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><div><p></p></div><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>";
+                var width = localStorage.getItem(current_server+"-"+s.id+"-w");
+                if( width == 0)
+                    width = 1;
+                var height = localStorage.getItem(current_server+"-"+s.id+"-h");
+                if( height == 0)
+                    height = 1;
+                    
+                var x = localStorage.getItem(current_server+"-"+s.id+"-x");
+                var y = localStorage.getItem(current_server+"-"+s.id+"-y");
+                
+                
+                gridster.add_widget(widgetToAdd,width,height,x,y);
                 $("#metewow_sensor").append("<option value=\""+s.id+"\" > "+s.display_name+"</option>");
             }
         }
+        
+        
+        
         if(sensors.length == 0) {
-            $("#tileset").append("<article data-id=0 style=\"display:none\"><div><h3>Pas de capteurs sur cette station.</h3></article>");
+            gridster.add_widget("<article data-id=0 style=\"display:none\"><div><h3>Pas de capteurs sur cette station.</h3></article>", 1, 1);
         }
          $("#tileset").children().fadeIn(400);
-        $(".container").shapeshift({
-                column: 5,
-                minColumn: 5,
-                gutterX: 0, // Compensate for div border
-                gutterY: 0, // Compensate for div border
-                paddingX: 10,
-                paddingY: 10
-            });
         last_update = "2012-01-01 00:00:00";
         sensors_data.lenght = 0;
-        jQuery("#tileset article > div").fitText(0.6);
-        //  <option value=\"".$sensor->id."\" > ".$sensor->display_name."</option>
+                jQuery("#tileset article > div").fitText(0.6, {maxFontSize: '90px' });
       },
       error: function(xhr,textStatus,err)
 {
@@ -227,7 +292,7 @@ function majData() {
       success:function(data){
         values = JSON.parse(data);
         if(current_server == rq) {
-            var children = $('#tileset').children();
+            var children = $('#tileset ul').children();
             for(var c=0;c<children.length;c++){
                // var i = $(children[c]).find("p").data("sensor-id");
                 var i = $(children[c]).data("sensor-id");
@@ -249,8 +314,9 @@ function majData() {
                                 if(sensors_data[i][azer][0] == t)
                                     already=true;
                             
-                            if(!already)
+                            if(!already) {
                                 sensors_data[i].push([t,crvalue]);
+                            }
                         }
                         $(children[c]).find("p").html(v.pop()[1] + " " + $(children[c]).data("unit"));
                         

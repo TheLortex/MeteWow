@@ -13,11 +13,13 @@ include "../api/datamanager.php";
         <link type="text/css" rel="stylesheet" href="css/main.css" />
         <link type="text/css" rel="stylesheet" href="css/tile.css" />
         <link type="text/css" rel="stylesheet" href="css/nprogress.css" />
+        <link type="text/css" rel="stylesheet" href="css/jquery.gridster.css" />
         
-            <script type="text/javascript" src="//code.jquery.com/jquery-2.0.3.js"></script>
-            <script type="text/javascript" src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+            <!--<script type="text/javascript" src="//code.jquery.com/jquery-2.0.3.js"></script>-->
+            <script type="text/javascript" src="js/lib/jquery.js"></script>
+            <!--<script type="text/javascript" src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>-->
             <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
-            <script type="text/javascript" src="js/lib/jquery.shapeshift.min.js"></script>
+            <script type="text/javascript" src="js/lib/jquery.gridster.js"></script>
             <script type="text/javascript" src="js/lib/jquery.transit.min.js"></script>
             <script type="text/javascript" src="js/lib/nprogress.js"></script>
             <script type="text/javascript" src="js/lib/jquery.fittext.js"></script>
@@ -127,8 +129,8 @@ include "../api/datamanager.php";
                     <div style="clear:both;"></div>
                 </div>
                 <div id="dashboard">
-                    <div id="tileset" class="container">
-                        
+                    <div id="tileset" class="gridster">
+                        <ul></ul>
                     </div>
                 </div>
             </div>
@@ -264,11 +266,13 @@ include "../api/datamanager.php";
             });*/
         });
         
-        $(".container").on("ss-rearranged", function(e, selected) {
+     /*   $(".container").on("ss-rearranged", function(e, selected) {
            $('.container').children().each(function() {
               localStorage.setItem($(this).index(), $(this).data("id"));
             });
-        });
+        });*/
+        
+        
         </script>
         <script type="text/javascript" src="js/main.js"> </script>
         <script type="text/javascript" src="js/tile.js"> </script>
@@ -291,6 +295,10 @@ include "../api/datamanager.php";
                 <?php
             }
         ?>
+        
+        
+        
+        
         
         </script>
         

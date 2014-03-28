@@ -2,8 +2,6 @@
 #tileset article {
     padding: 5px;
     text-align: center;
-    height: 210px;
-    width: 210px;
     
     position: absolute;
 }
@@ -26,29 +24,23 @@
     vertical-align: middle;
 }
 
-
-
-#tileset > article[data-ss-colspan='2'] {
-    width: 420px;
+#dashboard {
+    overflow: auto;
 }
 
-#tileset > article[data-ss-colspan='3'] {
-    width: 630px;
-}
-
-#tileset > article[data-ss-rowspan='2'] {
-    height: 420px;
+.gridster > * {
+    margin: 0  !important;
 }
 
 #tileset {
     position: relative;
-    overflow: auto;
+    overflow: visible;
 }
 
 #tileset article div button {
     position: absolute;
-    right:0;
-    top:150px;
+    right:0px;
+    top: calc(100% - 45px);
     
     display: none;
     height: 40px;

@@ -19,5 +19,10 @@ function height(bloc){
     document.getElementById(bloc).style.height = hauteur+"px";
 }
 
-window.onload = function(){ height("mapview") };
-window.onresize = function(){ height("mapview") };
+window.onload = function(){ height("mapview");height("dashboard"); };
+window.onresize = function(){ height("mapview");height("dashboard")  };
+
+
+$(window).scroll(function(){
+   window.scrollTo(0, 0);
+})
