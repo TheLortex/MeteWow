@@ -13,6 +13,8 @@ var graphiques = [];
 
 var displayed_graph = null;
 
+var majDataTimeout;
+
 var gridster;
 $(document).ready(function(){ 
     gridster = $(".gridster > ul").gridster({
@@ -266,6 +268,7 @@ function setServer(i) {
         last_update = "2012-01-01 00:00:00";
         sensors_data.lenght = 0;
                 jQuery("#tileset article > div").fitText(0.6, {maxFontSize: '90px' });
+        majData();
       },
       error: function(xhr,textStatus,err)
 {
@@ -279,9 +282,12 @@ function setServer(i) {
     });
 }
 
+var children;
 function majData() {
     var rq=current_server;
     var from_age = last_update;
+    
+    clearTimeout(majDataTimeout);
     
     $.ajax({
       type: 'GET',
@@ -291,72 +297,105 @@ function majData() {
       },
       success:function(data){
         values = JSON.parse(data);
-        if(current_server == rq) {
-            var children = $('#tileset ul').children();
-            for(var c=0;c<children.length;c++){
-               // var i = $(children[c]).find("p").data("sensor-id");
-                var i = $(children[c]).data("sensor-id");
-                var v = values[i];
-                if(typeof v != 'undefined') {
-                    if(v.length > 0) {
-                        for(var curV = 0; curV < v.length;curV++) {
-                            if(typeof sensors_data[i] == 'undefined')
-                                sensors_data[i] = [];
-                                
-                            var t = moment(v[curV][0]).unix()*1000;
-                            
-                            if(moment(last_update).unix() < moment(v[curV][0]).unix())
-                                last_update = v[curV][0];
-                            
-                            var crvalue = parseFloat(v[curV][1]);
-                            var already=false;
-                            for(var azer=0;azer<sensors_data[i].length && !already;azer++) 
-                                if(sensors_data[i][azer][0] == t)
-                                    already=true;
-                            
-                            if(!already) {
-                                sensors_data[i].push([t,crvalue]);
-                            }
-                        }
-                        $(children[c]).find("p").html(v.pop()[1] + " " + $(children[c]).data("unit"));
-                        
-                    }
-                    if(typeof sensors_data[i] != 'undefined') {
-                        var newDelta = new Date().getTime() - sensors_data[i][sensors_data[i].length-1][0];
-                        if(newDelta < last_update_delta)
-                            last_update_delta = newDelta;
-                    }
-                }
-            };
-        }
+        children = $('#tileset ul').children();
+        var i = $(children[0]).data("sensor-id");
+        var v = values[i];
+        var len = children.length-1;
+        handleData(0,0,Math.min(batchSize,len),len,v.length);
         
-        if(last_update_delta==10000000000)
-            $(".last_update_delta").html("trop longtemps");
-        else {
-            var secs = Math.round(last_update_delta/1000);
-            var mins = Math.floor(secs/60);
-            secs = secs - mins*60;
-            var hours = Math.floor(mins/60);
-            mins = mins - hours*60;
-            var days = Math.floor(hours/24);
-            hours = hours - days*24 - 1; // TECHNIQUE DE GROS PORC
-            
-            if(days != 0) {
-                $(".last_update_delta").html(days + " jour" + (days > 1 ? "s" : ""));
-            } else if(hours != 0) {
-                $(".last_update_delta").html(hours + " heure" + (hours > 1 ? "s" : ""));
-            } else if(mins != 0) {
-                $(".last_update_delta").html(mins + " minute" + (mins > 1 ? "s" : ""));
-            } else if(secs != 0) {
-                $(".last_update_delta").html(secs + " seconde" + (secs > 1 ? "s" : ""));
-            }
-        }
-        last_update_delta=10000000000;
-        setTimeout("majData()",1000);
+     
       },
       error:function(){}
     });
 }
+
+var batchSize = 256;
+
+function handleData(cursensor, curvalue_i, curvalue_e, maxsensor, maxvalue) {
+    var i = $(children[cursensor]).data("sensor-id");
+    
+    var i_plus_1 =0;
+    if(cursensor != maxsensor);
+        i_plus_1 = $(children[cursensor+1]).data("sensor-id");
+    var v = values[i];
+    if(typeof v != 'undefined') {
+        for(var index=curvalue_i; index <= curvalue_e; index++) {
+            if(v.length > index) {
+                if(typeof sensors_data[i] == 'undefined')
+                    sensors_data[i] = [];
+                    
+                var t = moment(v[index][0]).unix()*1000;
+                
+                if(moment(last_update).unix() < moment(v[index][0]).unix())
+                    last_update = v[index][0];
+                
+                var crvalue = parseFloat(v[index][1]);
+                
+                sensors_data[i].push([t,crvalue]);
+            }
+        }
+    }
+    
+    if(curvalue_e == maxvalue) {
+        if(typeof v != 'undefined') {
+            if(v.length > 0)
+                $(children[cursensor]).find("p").html(v.pop()[1] + " " + $(children[cursensor]).data("unit"));
+            
+        }
+        if(typeof sensors_data[i] != 'undefined') {
+            var newDelta = new Date().getTime() - sensors_data[i][sensors_data[i].length-1][0];
+            if(newDelta < last_update_delta)
+                last_update_delta = newDelta;
+        }
+        if(cursensor == maxsensor) {
+            handleUpdateDelta();
+            
+            majDataTimeout = setTimeout("majData()",5000);
+            console.log("Ending");
+        } else {
+            maxvalue = values[i_plus_1].length;
+            var max = Math.min(batchSize, maxvalue);
+            
+            console.log("Calling handleData("+(cursensor+1)+",0,"+max+","+maxsensor+","+maxvalue+")");
+            setTimeout("handleData("+(cursensor+1)+",0,"+max+","+maxsensor+","+maxvalue+")",1);
+        }
+    } else {
+        
+        var min = curvalue_e+1;
+        var max = Math.min(min+batchSize, maxvalue);
+        console.log("Calling handleData("+cursensor+","+min+","+max+","+maxsensor+","+maxvalue+")");
+        setTimeout("handleData("+cursensor+","+min+","+max+","+maxsensor+","+maxvalue+")",1);
+    }
+    
+    
+}
+
+
+function handleUpdateDelta() {
+    if(last_update_delta==10000000000)
+    $(".last_update_delta").html("trop longtemps");
+    else {
+        var secs = Math.round(last_update_delta/1000);
+        var mins = Math.floor(secs/60);
+        secs = secs - mins*60;
+        var hours = Math.floor(mins/60);
+        mins = mins - hours*60;
+        var days = Math.floor(hours/24);
+        hours = hours - days*24 - 1; // TECHNIQUE DE GROS PORC
+        
+        if(days != 0) {
+            $(".last_update_delta").html(days + " jour" + (days > 1 ? "s" : ""));
+        } else if(hours != 0) {
+            $(".last_update_delta").html(hours + " heure" + (hours > 1 ? "s" : ""));
+        } else if(mins != 0) {
+            $(".last_update_delta").html(mins + " minute" + (mins > 1 ? "s" : ""));
+        } else if(secs != 0) {
+            $(".last_update_delta").html(secs + " seconde" + (secs > 1 ? "s" : ""));
+        }
+    }
+    last_update_delta=10000000000;
+}
+
 
 majData();
 /*
