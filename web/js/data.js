@@ -242,7 +242,7 @@ function setServer(i) {
             sensors_meta[s.id] = [s.display_name,s.display_unit,s.category];
             
             if(s.category != 4 && s.category != 5) {
-                var widgetToAdd = "<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><div><p></p></div><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>";
+                var widgetToAdd = "<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><div><p></p><div class='loadBarWidget'></div></div><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>";
                 var width = localStorage.getItem(current_server+"-"+s.id+"-w");
                 if( width == 0)
                     width = 1;
@@ -272,7 +272,7 @@ function setServer(i) {
       },
       error: function(xhr,textStatus,err)
 {
-        NProgress.done();
+    NProgress.done();
     alert("readyState: " + xhr.readyState);
     alert("responseText: "+ xhr.responseText);
     alert("status: " + xhr.status);
@@ -314,10 +314,18 @@ var batchSize = 256;
 function handleData(cursensor, curvalue_i, curvalue_e, maxsensor, maxvalue) {
     var i = $(children[cursensor]).data("sensor-id");
     
+    
     var i_plus_1 =0;
     if(cursensor != maxsensor);
         i_plus_1 = $(children[cursensor+1]).data("sensor-id");
     var v = values[i];
+    
+    var width = ((maxvalue-curvalue_e)/maxvalue)*100;
+    var left = (100-width)/2;
+    
+    $(children[cursensor]).find(".loadBarWidget").css("width",width+"%");
+    $(children[cursensor]).find(".loadBarWidget").css("left",left+"%");
+                
     if(typeof v != 'undefined') {
         for(var index=curvalue_i; index <= curvalue_e; index++) {
             if(v.length > index) {
@@ -332,6 +340,7 @@ function handleData(cursensor, curvalue_i, curvalue_e, maxsensor, maxvalue) {
                 var crvalue = parseFloat(v[index][1]);
                 
                 sensors_data[i].push([t,crvalue]);
+                
             }
         }
     }
@@ -349,21 +358,20 @@ function handleData(cursensor, curvalue_i, curvalue_e, maxsensor, maxvalue) {
         }
         if(cursensor == maxsensor) {
             handleUpdateDelta();
-            
             majDataTimeout = setTimeout("majData()",5000);
-            console.log("Ending");
+          //  console.log("Ending");
         } else {
             maxvalue = values[i_plus_1].length;
             var max = Math.min(batchSize, maxvalue);
             
-            console.log("Calling handleData("+(cursensor+1)+",0,"+max+","+maxsensor+","+maxvalue+")");
+        //    console.log("Calling handleData("+(cursensor+1)+",0,"+max+","+maxsensor+","+maxvalue+")");
             setTimeout("handleData("+(cursensor+1)+",0,"+max+","+maxsensor+","+maxvalue+")",1);
         }
     } else {
         
         var min = curvalue_e+1;
         var max = Math.min(min+batchSize, maxvalue);
-        console.log("Calling handleData("+cursensor+","+min+","+max+","+maxsensor+","+maxvalue+")");
+     //   console.log("Calling handleData("+cursensor+","+min+","+max+","+maxsensor+","+maxvalue+")");
         setTimeout("handleData("+cursensor+","+min+","+max+","+maxsensor+","+maxvalue+")",1);
     }
     
