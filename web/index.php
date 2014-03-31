@@ -23,7 +23,7 @@ include "../api/datamanager.php";
             <script type="text/javascript" src="js/lib/jquery.transit.min.js"></script>
             <script type="text/javascript" src="js/lib/nprogress.js"></script>
             <script type="text/javascript" src="js/lib/jquery.fittext.js"></script>
-            <script type="text/javascript" src="//momentjs.com/downloads/moment-with-langs.js"></script>
+          <!--  <script type="text/javascript" src="//momentjs.com/downloads/moment-with-langs.js"></script>-->
             
             <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
  		    <script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
@@ -179,6 +179,31 @@ include "../api/datamanager.php";
                     <div style="clear:both;"></div>
                 </div>
                 <div id="paramboard">
+                    <fieldset>
+                        <h3> ↪ Tableau de bord </h3>
+                        </br>
+                        <div>
+                            <span> Intervalle de temps pour les graphiques : </span>
+                            <select>
+                                <option value="3h">3 heures</option>
+                                <option value="6h">6 heures</option>
+                                <option value="12h">12 heures</option>
+                                <option value="24h">24 heures</option>
+                                <option value="3d">3 jours</option>
+                                <option value="1w">1 semaine</option>
+                            </select>
+                            </br>
+                            </br>
+                            <button>Réinitialiser la disposition des informations </button>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <h3> ↪ Interface administrateur</h3>
+                        </br>
+                        <div>
+                            <button onclick="authadmin()">Accéder à l'interface administrateur</button>
+                        </div>
+                    </fieldset>
                 </div>
                 
             </div>
@@ -238,42 +263,6 @@ include "../api/datamanager.php";
 
         <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap/3.0.0/js/bootstrap.min.js"></script>
         
-        <script type="text/javascript">
-        
-         $(window).load(function(){
-          /*  var container = document.getElementById("tileset");
-            var nodes = container.getElementsByTagName('article');
-            var sortList = [];
-            var l = nodes.length;
-            for(var i=0;i<l;i++) {
-                $(nodes[0]).attr("data-ss-colspan",parseInt(localStorage.getItem("col-"+i) || "1",10));
-                $(nodes[0]).attr("data-ss-rowspan",parseInt(localStorage.getItem("row-"+i) || "1",10));
-                
-                sortList.push(nodes[0]); 
-                container.removeChild(nodes[0]);
-            }
-            
-            for(var i=0;i<l;i++) {
-                var itemAtIndex = parseInt(localStorage.getItem(i) || (i+""),10);
-                container.appendChild(sortList[itemAtIndex]); 
-            }
-             
-            $(".container").shapeshift({
-                gutterX: 0, // Compensate for div border
-                gutterY: 0, // Compensate for div border
-                paddingX: 10,
-                paddingY: 10
-            });*/
-        });
-        
-     /*   $(".container").on("ss-rearranged", function(e, selected) {
-           $('.container').children().each(function() {
-              localStorage.setItem($(this).index(), $(this).data("id"));
-            });
-        });*/
-        
-        
-        </script>
         <script type="text/javascript" src="js/main.js"> </script>
         <script type="text/javascript" src="js/tile.js"> </script>
         <script type="text/javascript" src="js/data.js"> </script>
@@ -283,7 +272,8 @@ include "../api/datamanager.php";
         <script type="text/javascript">
         <?php 
             foreach($serverlist as $server) {
-                echo "L.marker([".$server["lat"].", ".$server["lon"]."]).addTo(map).on(\"click\",";
+                if(is_numeric($server["lat"]) && is_numeric($server["lon"])) {
+                    echo "L.marker([".$server["lat"].", ".$server["lon"]."]).addTo(map).on(\"click\",";
                 ?>
                 function() {
                     var id = <?php echo $server["id"];?>;
@@ -293,6 +283,7 @@ include "../api/datamanager.php";
                     $("#metewow_server").val(id);
                 });
                 <?php
+                }
             }
         ?>
         

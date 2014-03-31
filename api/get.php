@@ -18,8 +18,8 @@ if(isset($_GET["request"])) {
     } else if($_GET["request"] == "data") {
         if(isset($_GET["from"]) && (isset($_GET["server"]) || isset($_GET["sensor"]))) {
             $all = !isset($_GET["sensor"]);
-            $from =  $_GET["from"];
-            $to = (isset($_GET["to"])) ? $_GET["to"] : date('Y-m-d H:i:s', time());
+            $from =  date('Y-m-d H:i:s', $_GET["from"]);
+            $to = (isset($_GET["to"])) ? date('Y-m-d H:i:s', $_GET["to"]) : date('Y-m-d H:i:s', time());
         
             $datamgr = new DataManager();
             $data = array();

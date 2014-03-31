@@ -90,7 +90,7 @@ class DataManager {
                 $req->execute(array($value,$mac));
             }
             
-            if($cate == 5) {//lon
+            if($cate == 3) {//lon
                 $req = $this->database->prepare("UPDATE mtw_servers SET lastlon = ? WHERE mac = ?");
                 $req->execute(array($value,$mac));
             }
@@ -101,16 +101,18 @@ class DataManager {
     
     
     public function getData($sensor_id, $from, $to) {
-        $request =$this->database->prepare("SELECT * FROM mtw_data WHERE mtw_sensor_id=? AND time > ? AND time < ?");
+        $request =$this->database->prepare("SELECT value, time FROM mtw_data WHERE mtw_sensor_id=? AND time > ? AND time < ?");
         $request->execute(array($sensor_id, $from, $to));
         
         $values = array();
         
         while($data = $request->fetch()) {
             $d = array();
-            $d[0] = $data["time"];
+            $d[0] = strtotime($data["time"]);
             $d[1] = $data["value"];
-            $values[] = $d;
+            
+            if(is_numeric($d[1]))
+                $values[] = $d;
         }
         
         return $values;

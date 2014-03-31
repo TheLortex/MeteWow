@@ -185,6 +185,15 @@ h1 {
     
 }
 
+#paramboard fieldset{
+    margin-top: 50px;
+    margin-left: 30px;
+}
+
+#paramboard fieldset div{
+    margin-left: 30px;
+}
+
 
 #sidebar .selected {
     

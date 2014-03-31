@@ -1,7 +1,7 @@
 var current_server=0;
 var current_sensor=-1;
 
-var last_update = "2999-01-01 00:00:00";
+var last_update = 0;
 var last_update_delta = 10000000000;
 var sensors_data = [];
 var sensors_meta = [];
@@ -241,22 +241,21 @@ function setServer(i) {
             var s = sensors[i];
             sensors_meta[s.id] = [s.display_name,s.display_unit,s.category];
             
-            if(s.category != 4 && s.category != 5) {
-                var widgetToAdd = "<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><div><p></p><div class='loadBarWidget'></div></div><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>";
-                var width = localStorage.getItem(current_server+"-"+s.id+"-w");
-                if( width == 0)
-                    width = 1;
-                var height = localStorage.getItem(current_server+"-"+s.id+"-h");
-                if( height == 0)
-                    height = 1;
-                    
-                var x = localStorage.getItem(current_server+"-"+s.id+"-x");
-                var y = localStorage.getItem(current_server+"-"+s.id+"-y");
+            var widgetToAdd = "<article data-sensor-id="+s.id+" data-unit=\""+s.display_unit+"\" data-sensor-name=\""+s.display_name+"\" data-id="+i+" style=\"display:none\"><div><h3>"+s.display_name+"</h3><div><p></p><div class='loadBarWidget'></div></div><button class=\"glyphicon glyphicon-signal btn-lg\"></button></div><div style=\"display: none;\"><div class=\"quickgraph\"></div><button class=\"glyphicon glyphicon-ok btn-lg\"></button></div></article>";
+            var width = localStorage.getItem(current_server+"-"+s.id+"-w");
+            if( width == 0)
+                width = 1;
+            var height = localStorage.getItem(current_server+"-"+s.id+"-h");
+            if( height == 0)
+                height = 1;
                 
-                
-                gridster.add_widget(widgetToAdd,width,height,x,y);
-                $("#metewow_sensor").append("<option value=\""+s.id+"\" > "+s.display_name+"</option>");
-            }
+            var x = localStorage.getItem(current_server+"-"+s.id+"-x");
+            var y = localStorage.getItem(current_server+"-"+s.id+"-y");
+            
+            
+            gridster.add_widget(widgetToAdd,width,height,x,y);
+            $("#metewow_sensor").append("<option value=\""+s.id+"\" > "+s.display_name+"</option>");
+            
         }
         
         
@@ -265,7 +264,7 @@ function setServer(i) {
             gridster.add_widget("<article data-id=0 style=\"display:none\"><div><h3>Pas de capteurs sur cette station.</h3></article>", 1, 1);
         }
          $("#tileset").children().fadeIn(400);
-        last_update = "2012-01-01 00:00:00";
+        last_update = 0;
         sensors_data.lenght = 0;
                 jQuery("#tileset article > div").fitText(0.6, {maxFontSize: '90px' });
         majData();
@@ -332,15 +331,20 @@ function handleData(cursensor, curvalue_i, curvalue_e, maxsensor, maxvalue) {
                 if(typeof sensors_data[i] == 'undefined')
                     sensors_data[i] = [];
                     
-                var t = moment(v[index][0]).unix()*1000;
-                
-                if(moment(last_update).unix() < moment(v[index][0]).unix())
+               // var t = moment(v[index][0]).unix()*1000;
+                var t = v[index][0];
+                if(last_update < v[index][0])
                     last_update = v[index][0];
                 
                 var crvalue = parseFloat(v[index][1]);
+                var already=false;
+                for(var azer=0;azer<sensors_data[i].length && !already;azer++) 
+                    if(sensors_data[i][azer][0] == t)
+                        already=true;
                 
-                sensors_data[i].push([t,crvalue]);
-                
+                if(!already && !isNaN(crvalue))
+                    sensors_data[i].push([t,crvalue]);
+            
             }
         }
     }
