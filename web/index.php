@@ -17,6 +17,8 @@ include "../api/datamanager.php";
         
             <!--<script type="text/javascript" src="//code.jquery.com/jquery-2.0.3.js"></script>-->
             <script type="text/javascript" src="js/lib/jquery.js"></script>
+            <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
+
             <!--<script type="text/javascript" src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>-->
             <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
             <script type="text/javascript" src="js/lib/jquery.gridster.js"></script>
@@ -42,6 +44,12 @@ include "../api/datamanager.php";
                 
                 
                 function changerPage(npage) {
+                
+                    if(currentPage == 5) {
+                        $("#listnav5").attr("class","ns");
+                        $("#listnav5").fadeOut();
+                    }
+                
                     if(npage == currentPage)
                         return;
                         
@@ -70,6 +78,15 @@ include "../api/datamanager.php";
                         $("#listnav2").attr("class","ns");
                         $("#listnav3").attr("class","ns");
                         $("#listnav4").attr("class","selected");
+                    } else if(npage == 5) {
+                        $("#listnav5").fadeIn();
+                        
+                        $("#content").css("top","-400vh");
+                        $("#listnav1").attr("class","ns");
+                        $("#listnav2").attr("class","ns");
+                        $("#listnav3").attr("class","ns");
+                        $("#listnav4").attr("class","ns");
+                        $("#listnav5").attr("class","selected");
                     }
                    
                    
@@ -105,6 +122,7 @@ include "../api/datamanager.php";
                     <li id="listnav2" onclick="changerPage(2)" >Graphiques</li>
                     <li id="listnav3" onclick="changerPage(3)" >Carte</li>
                     <li id="listnav4" onclick="changerPage(4)" >Paramètres</li>
+                    <li id="listnav5" onclick="changerPage(5)" style="display: none">Admin</li>
                 </ul>
             </nav>
             <div id="main">
@@ -194,36 +212,32 @@ include "../api/datamanager.php";
                             </select>
                             </br>
                             </br>
-                            <button>Réinitialiser la disposition des informations </button>
+                            <button onclick="resetDisposition()">Réinitialiser la disposition des informations </button>
                         </div>
                     </fieldset>
-                    <fieldset>
+                    <fieldset id="admin_fieldset">
                         <h3> ↪ Interface administrateur</h3>
                         </br>
                         <div>
-                            <button onclick="authadmin()">Accéder à l'interface administrateur</button>
+                            <span> Mot de passe: </span> <input type="password" id="admin_passwd"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <button onclick="authAdmin()">Accéder à l'interface administrateur</button>
                         </div>
                     </fieldset>
                 </div>
                 
+            </div>
+            
+            <!-- UI ADMIN -->
+            <div id="admin">
+                <div class="cheval">
+                    <h2> Interface admin</h2>
+                    <div style="clear:both;"></div>
+                </div>
             </div>
         
             <div style="clear:both;"></div>
         </div>
         
         
-        
-        <!-- Menu contextuel pour les tiles -->
-        
-        <div class="hide" id="rmenu">
-            <ul>
-                <li onclick="setDimensions(1,1); return false;">1x1</li>
-                <li onclick="setDimensions(2,1); return false;">2x1</li>
-                <li onclick="setDimensions(1,2); return false;">1x2</li>
-                <li onclick="setDimensions(2,2); return false;">2x2</li>
-            </ul>
-        </div>
-
 
         <!--  Le lock screen. -->
 
@@ -269,6 +283,7 @@ include "../api/datamanager.php";
         
         
         <script type="text/javascript" src="js/maps.js"> </script>
+        <script type="text/javascript" src="js/admin.js"> </script>
         <script type="text/javascript">
         <?php 
             foreach($serverlist as $server) {

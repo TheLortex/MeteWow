@@ -1,33 +1,5 @@
 var target=null;
 
-$(document).ready(function() {
-    if ($("#test").addEventListener) {
-        $("#test").addEventListener('contextmenu', function(e) {
-            alert("You've tried to open context menu"); //here you draw your own menu
-            e.preventDefault();
-        }, false);
-    } else {
-        $('body').on('contextmenu', 'article', function(e) {
-            var evt;
-            if (window.event) {
-                evt=window.event;
-            }
-            else {
-                evt= e;
-            }
-            document.getElementById("rmenu").className = "show";
-            $("#rmenu").css("top",mouseY(evt));
-            $("#rmenu").css("left",mouseX(evt));
-            target = $(this);
-            evt.returnValue = false;
-            return false;
-        });
-    }
-    $(document).bind("click", function(event) {
-        document.getElementById("rmenu").className = "hide";
-    });
-});
-
 function mouseX(evt) {
     if (evt.pageX) return evt.pageX;
     else if (evt.clientX)

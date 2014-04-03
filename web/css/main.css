@@ -151,7 +151,7 @@ h1 {
     z-index:101;
     } 
     
-    #main,#graphs,#params,#map {
+    #main,#graphs,#params,#map,#admin {
         width: 85%;
         float: right;
         height: 100vh;

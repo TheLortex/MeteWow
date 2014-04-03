@@ -16,6 +16,20 @@ function toggleShowMenu() {
 }
 
 
+
+
+function resetDisposition() {
+    localStorage.clear();
+    location.reload();
+}
+
+
+
+
+
+
+
+
 if  (document.getElementById){
 (function(){
 
